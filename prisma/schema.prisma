@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+    id         Int      @id @default(autoincrement())
+  name          String?
+  email         String?   @unique
+  createdAt     DateTime  @default(now()) @map(name: "created_at")
+  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+  trips         Trip[]
+  likedTrips    TripLike[]
+  bio       String
+
+  // adhering to naming conventions of plural for table names
+  @@map(name: "users")
+}
+
+model Trip {
+    id     Int      @id @default(autoincrement())
+  title     String
+  public Boolean @default(false)
+  destination String
+  startDate DateTime @map(name: "start_date")
+  endDate DateTime @map(name: "end_date")
+  budget Budget
+  dailyPlan DailyPlan[]
+  tags Tag[]
+  likes TripLike[]
+    createdAt     DateTime  @default(now()) @map(name: "created_at")
+  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+  author    User?   @relation(fields: [authorId], references: [id])
+  // this is the foreign key that connects user and trip tables
+  authorId  Int?
+}
+
+model DailyPlan {
+   id     Int      @id @default(autoincrement())
+   date DateTime
+   location String?
+   accommodation String?
+   travel String?
+   notes String?
+   tripId Int
+   trip Trip @relation(fields: [tripId], references: [id])
+}
+
+model TripLike {
+     id     Int      @id @default(autoincrement())
+  likedBy User   @relation(fields: [userId], references: [id])
+  userId Int
+  trip  Trip @relation(fields: [tripId], references: [id])
+     tripId Int
+}
+
+enum Budget {
+  BUDGET
+  MODERATE
+  LUXURIOUS
+}
+
+enum Tag {
+  HIKING
+  ROADTRIP
+  SOLO
+  ROMANTIC
+  FAMILY
+  THRILLSEEKING
+  CHILL
+}
+
