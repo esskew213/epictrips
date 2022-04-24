@@ -6,12 +6,17 @@ export default withApiAuthRequired(async function createTrip(req, res) {
   const { title, startDate } = req.body;
   const { user } = getSession(req, res);
   console.log(user);
-  const result = await prisma.trip.create({
-    data: {
-      title: title,
-      startDate: startDate,
-      authorId: user.sub,
-    },
-  });
-  res.json(result);
+  try {
+    const newTrip = await prisma.trip.create({
+      data: {
+        title: title,
+        startDate: startDate,
+        authorId: user.sub,
+      },
+    });
+    console.log(newTrip);
+    res.json(newTrip);
+  } catch (err) {
+    console.error(err);
+  }
 });

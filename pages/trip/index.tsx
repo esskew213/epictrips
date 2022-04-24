@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Router from 'next/router';
-import TableDatePicker from '../components/TableDatePicker';
+import TableDatePicker from '../../components/TableDatePicker';
 
 const Trip = () => {
   const [title, setTitle] = useState('');
@@ -19,13 +19,15 @@ const Trip = () => {
     const body = { title, startDate };
     console.log(body);
     try {
-      await fetch('/api/trip', {
+      const res = await fetch('/api/trip', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
       setTitle('');
-      await Router.push('/');
+      const data = await res.json();
+      console.log(data);
+      await Router.push(`/trip/${data.id}`);
     } catch (err) {
       console.error(err);
     }
@@ -59,5 +61,6 @@ const Trip = () => {
     </>
   );
 };
+
 export default Trip;
 export const getServerSideProps = withPageAuthRequired();
