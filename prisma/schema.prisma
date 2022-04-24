@@ -28,10 +28,7 @@ model Trip {
     id     Int      @id @default(autoincrement())
   title     String
   public Boolean @default(false)
-  destination String
-  startDate DateTime @map(name: "start_date")
-  endDate DateTime @map(name: "end_date")
-  budget Budget
+  startDate DateTime? @map(name: "start_date")
   dailyPlan DailyPlan[]
   tags Tag[]
   likes TripLike[]
@@ -44,10 +41,9 @@ model Trip {
 
 model DailyPlan {
    id     Int      @id @default(autoincrement())
-   date DateTime
-   location String?
-   accommodation String?
-   travel String?
+  successorId Int?
+  successor   DailyPlan?   @relation("DailyPlanList", fields: [successorId], references: [id])
+  predecessor DailyPlan?   @relation("DailyPlanList")
    notes String?
    tripId Int
    trip Trip @relation(fields: [tripId], references: [id])
