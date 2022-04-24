@@ -2,6 +2,7 @@ import Head from 'next/head';
 import React from 'react';
 import Image from 'next/image';
 import { GetServerSideProps } from 'next';
+import { useUser } from '@auth0/nextjs-auth0';
 import prisma from '../lib/prisma';
 import { TripCardProps } from '../components/TripCard';
 export const getServerSideProps: GetServerSideProps = async () => {
@@ -22,6 +23,8 @@ type Props = {
 };
 
 const Home: React.FC<Props> = (props) => {
+  const { user, error, isLoading } = useUser();
+
   return (
     <div className=''>
       <Head>
@@ -29,7 +32,18 @@ const Home: React.FC<Props> = (props) => {
         <meta name='description' content='Inspiration for your next getaway' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-
+      <nav>
+        {/* Using a href because this is  call to an API to login */}
+        <a href='/api/auth/login'>Login</a>
+        <a href='/api/auth/logout'>Logout</a>
+      </nav>
+      {user && (
+        <div>
+          <img src={user.picture} alt={user.name} />
+          <h2>{user.name}</h2>
+          <p>{user.email}</p>
+        </div>
+      )}
       <main>
         <h1 className='text-3xl px-2 py-4 bg-slate-400'>Epic Trips</h1>
         {props.trips.map((trip) => (
