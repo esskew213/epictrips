@@ -48,7 +48,7 @@ const Home: React.FC<Props> = (props) => {
         <h1 className='text-3xl px-2 py-4 bg-slate-400'>Epic Trips</h1>
         {props.trips.map((trip) => (
           <div key={trip.id}>
-            {trip.title} in {trip.destination} by {trip.author.name}
+            {trip.title} by {trip.author.name}
           </div>
         ))}
       </main>

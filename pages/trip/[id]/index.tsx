@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { GetServerSideProps } from 'next';
-import prisma from '../../lib/prisma';
-import Id from '../api/trip/[id]';
+import prisma from '../../../lib/prisma';
+import Id from '../../api/trip/[id]';
+import { useRouter } from 'next/router';
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const id = parseInt(context.params.id);
   // retrieve the trip
@@ -62,6 +64,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 //*********** COMPONENT ***********//
 //*********************************//
 const TripDetails = ({ trip, dateStr, dailyPlans }) => {
+  const router = useRouter();
   // set initial state
   const initialState = {};
   for (let plan of dailyPlans) {
@@ -108,31 +111,47 @@ const TripDetails = ({ trip, dateStr, dailyPlans }) => {
     }
   };
 
+  // runs when user is done with entire page
+  const handlePageSubmit = async (evt) => {
+    evt.preventDefault();
+    try {
+      await handleSave();
+    } catch (err) {
+      console.error(err);
+    }
+    router.push(`/trip/${trip.id}/summary`);
+  };
   return (
     <div>
-      <h1 className='text-3xl'>Add details to {trip.title}</h1>
-      <h2>{dateStr}</h2>
-      {dailyPlans.map((plan, idx) => {
-        return (
-          <div className='bg-slate-200 p-6' key={plan.id}>
-            <h4>Day {idx + 1}</h4>
-            <form>
-              <input
-                type='textarea'
-                value={notes[plan.id]}
-                onChange={(e) => {
-                  handleNotesChange(e, plan.id);
-                }}
-              />
-              <button onClick={(evt) => handleAddDay(evt, plan.id)}>
-                Add day
-              </button>
-            </form>
-          </div>
-        );
-      })}
+      <h1 className='text-3xl'>Add details to {trip.title || 'your trip'}</h1>
+      <h2>{dateStr || null}</h2>
+      {dailyPlans &&
+        dailyPlans.map((plan, idx) => {
+          return (
+            <div className='bg-slate-200 p-6' key={plan.id}>
+              <h4>Day {idx + 1}</h4>
+              <form>
+                <input
+                  type='textarea'
+                  value={notes[plan.id]}
+                  onChange={(e) => {
+                    handleNotesChange(e, plan.id);
+                  }}
+                />
+                <button onClick={(evt) => handleAddDay(evt, plan.id)}>
+                  Add day
+                </button>
+              </form>
+            </div>
+          );
+        })}
+      <div>
+        <button className='bg-orange-400' onClick={(e) => handlePageSubmit(e)}>
+          SAVE ITINERARY
+        </button>
+      </div>
     </div>
   );
 };
 
-export default TripDetails;
+export default withPageAuthRequired(TripDetails);
