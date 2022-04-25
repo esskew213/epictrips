@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import prisma from '../../lib/prisma';
 import Id from '../api/trip/[id]';
@@ -58,22 +58,25 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-// COMPONENT
+//*********************************//
+//*********** COMPONENT ***********//
+//*********************************//
 const TripDetails = ({ trip, dateStr, dailyPlans }) => {
-  // INITIAL STATE
+  // set initial state
   const initialState = {};
   for (let plan of dailyPlans) {
     const { id, notes } = plan;
     initialState[id] = notes || '';
   }
-  // console.log('INITIAL STATE', initialState);
-
   const [notes, setNotes] = useState(initialState);
+
+  // handle typing
   const handleNotesChange = (evt, id) => {
     console.log('NOTES', notes);
     setNotes({ ...notes, [id]: evt.target.value });
   };
 
+  // to save notes
   const handleSave = async () => {
     const res = await fetch(`/api/trip/${trip.id}/dailyplan/update`, {
       method: 'PUT',
@@ -81,36 +84,51 @@ const TripDetails = ({ trip, dateStr, dailyPlans }) => {
       body: JSON.stringify(notes),
     });
   };
+
   // adds a new day when button is clicked
   const handleAddDay = async (evt, dailyPlanId) => {
     evt.preventDefault();
-    await handleSave();
+    // first save all notes
+    try {
+      await handleSave();
+    } catch (err) {
+      console.error(err);
+    }
+
+    // then add a new day
     const body = { predecessorId: dailyPlanId };
-    const res = await fetch(`/api/trip/${trip.id}/dailyplan`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
+    try {
+      const res = await fetch(`/api/trip/${trip.id}/dailyplan`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
     <div>
       <h1 className='text-3xl'>Add details to {trip.title}</h1>
       <h2>{dateStr}</h2>
-      {dailyPlans.map((plan) => {
+      {dailyPlans.map((plan, idx) => {
         return (
-          <form key={plan.id} className='bg-slate-200 p-6'>
-            <input
-              type='textarea'
-              value={notes[plan.id]}
-              onChange={(e) => {
-                handleNotesChange(e, plan.id);
-              }}
-            />
-            <button onClick={(evt) => handleAddDay(evt, plan.id)}>
-              Add day
-            </button>
-          </form>
+          <div className='bg-slate-200 p-6' key={plan.id}>
+            <h4>Day {idx + 1}</h4>
+            <form>
+              <input
+                type='textarea'
+                value={notes[plan.id]}
+                onChange={(e) => {
+                  handleNotesChange(e, plan.id);
+                }}
+              />
+              <button onClick={(evt) => handleAddDay(evt, plan.id)}>
+                Add day
+              </button>
+            </form>
+          </div>
         );
       })}
     </div>
