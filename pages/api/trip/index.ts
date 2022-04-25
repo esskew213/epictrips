@@ -15,6 +15,14 @@ export default withApiAuthRequired(async function createTrip(req, res) {
       },
     });
     console.log(newTrip);
+
+    const newFirstDay = await prisma.dailyPlan.create({
+      data: {
+        tripId: newTrip.id,
+      },
+    });
+    console.log('TRIP CREATED', newTrip);
+    console.log('PLAN CREATED', newFirstDay);
     res.json(newTrip);
   } catch (err) {
     console.error(err);
