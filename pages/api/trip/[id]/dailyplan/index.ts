@@ -5,20 +5,22 @@ import prisma from '../../../../../lib/prisma';
 export default withApiAuthRequired(async function createDailyPlan(req, res) {
   // get trip id
   const { method } = req;
-  const id = parseInt(req.query.id);
+
   const { user } = getSession(req, res);
 
   if (method === 'POST') {
+    const { id } = req.query;
+    console.log(typeof id);
     const { predecessorId } = req.body;
     try {
       const currentNextDay = await prisma.dailyPlan.findUnique({
         where: {
-          predecessorId: predecessorId,
+          predecessorId: parseInt(predecessorId),
         },
       });
       const newNextDay = await prisma.dailyPlan.create({
         data: {
-          tripId: id,
+          tripId: parseInt(id),
           notes: '',
         },
       });
@@ -48,8 +50,10 @@ export default withApiAuthRequired(async function createDailyPlan(req, res) {
   }
 
   if (method === 'GET') {
+    const { id } = req.query;
+
     const trip = await prisma.trip.findUnique({
-      where: { id: id },
+      where: { id: parseInt(id) },
     });
 
     const options = {
@@ -62,7 +66,7 @@ export default withApiAuthRequired(async function createDailyPlan(req, res) {
 
     // retrieve daily plans associated with that trip
     const dailyPlans = await prisma.dailyPlan.findMany({
-      where: { tripId: id },
+      where: { tripId: parseInt(id) },
     });
 
     // Get predecessor id to daily plan mapping
@@ -91,11 +95,9 @@ export default withApiAuthRequired(async function createDailyPlan(req, res) {
     }
 
     res.json({
-      data: {
-        trip: JSON.parse(JSON.stringify(trip)),
-        dateStr,
-        dailyPlans: JSON.parse(JSON.stringify(sortedPlans)),
-      },
+      trip: JSON.parse(JSON.stringify(trip)),
+      dateStr,
+      dailyPlans: JSON.parse(JSON.stringify(sortedPlans)),
     });
   }
 });

@@ -4,74 +4,46 @@ import prisma from '../../../lib/prisma';
 import Id from '../../api/trip/[id]';
 import { useRouter } from 'next/router';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const id = parseInt(context.params.id);
-  // retrieve the trip
-  const trip = await prisma.trip.findUnique({
-    where: { id: id },
-  });
-  const options = {
-    weekday: 'short',
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  };
-  const dateStr = trip.startDate.toLocaleDateString(undefined, options);
-
-  // retrieve daily plans associated with that trip
-  const dailyPlans = await prisma.dailyPlan.findMany({
-    where: { tripId: id },
-    include: {
-      trip: true, // Return all fields
-    },
-  });
-
-  // Get predecessor id to daily plan mapping
-  const predecessorIdToPlanMap = dailyPlans.reduce(function (map, plan) {
-    map[plan.predecessorId] = plan;
-    return map;
-  }, {});
-
-  // Find day 1
-  let firstPlan = null;
-  for (let plan of dailyPlans) {
-    if (plan.predecessorId === null) {
-      firstPlan = plan;
-    }
-  }
-
-  // Traverse the daily plans from day 1 to last day
-  const sortedPlans = [];
-  let currentPlan = firstPlan;
-  while (true) {
-    sortedPlans.push(currentPlan);
-    currentPlan = predecessorIdToPlanMap[currentPlan.id];
-    if (!currentPlan) {
-      break;
-    }
-  }
-
-  return {
-    props: {
-      trip: JSON.parse(JSON.stringify(trip)),
-      dateStr,
-      dailyPlans: JSON.parse(JSON.stringify(sortedPlans)),
-    },
-  };
-};
 
 //*********************************//
 //*********** COMPONENT ***********//
 //*********************************//
-const TripDetails = ({ trip, dateStr, dailyPlans }) => {
+const TripDetails = () => {
   const router = useRouter();
-  // set initial state
+  const { id } = router.query;
+  console.log(id);
   const initialState = {};
-  for (let plan of dailyPlans) {
-    const { id, notes } = plan;
-    initialState[id] = notes || '';
-  }
-  const [notes, setNotes] = useState(initialState);
+  const [notes, setNotes] = useState('');
+  const [dailyPlans, setDailyPlans] = useState([]);
+  const [trip, setTrip] = useState({});
+  const [date, setDate] = useState('');
+  const [requireReload, setRequireReload] = useState(false);
+  useEffect(() => {
+    const getDailyPlans = async () => {
+      try {
+        const res = await fetch(`/api/trip/${id}/dailyplan`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        });
+        const data = await res.json();
+        console.log(data);
+        setDate(data.dateStr);
+        setTrip(data.trip);
+        setDailyPlans(data.dailyPlans);
+        for (let plan of data.dailyPlans) {
+          const { id, notes } = plan;
+          initialState[id] = notes || '';
+        }
+        console.log(initialState);
+        setNotes(initialState);
+        setRequireReload(false);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    getDailyPlans();
+  }, [requireReload]);
+  // set initial state
 
   // handle typing
   const handleNotesChange = (evt, id) => {
@@ -109,6 +81,7 @@ const TripDetails = ({ trip, dateStr, dailyPlans }) => {
     } catch (err) {
       console.error(err);
     }
+    setRequireReload(true);
   };
 
   // runs when user is done with entire page
@@ -121,10 +94,11 @@ const TripDetails = ({ trip, dateStr, dailyPlans }) => {
     }
     router.push(`/trip/${trip.id}/summary`);
   };
+
   return (
     <div>
-      <h1 className='text-3xl'>Add details to {trip.title || 'your trip'}</h1>
-      <h2>{dateStr || null}</h2>
+      <h1 className='text-3xl'>Add details to {trip?.title || 'your trip'}</h1>
+      <h2>{date || null}</h2>
       {dailyPlans &&
         dailyPlans.map((plan, idx) => {
           return (
@@ -133,7 +107,7 @@ const TripDetails = ({ trip, dateStr, dailyPlans }) => {
               <form>
                 <input
                   type='textarea'
-                  value={notes[plan.id]}
+                  value={notes[plan.id] || ''}
                   onChange={(e) => {
                     handleNotesChange(e, plan.id);
                   }}
