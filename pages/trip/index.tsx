@@ -11,13 +11,11 @@ const Trip = () => {
     setTitle(e.target.value);
   };
   const handleStartDateChange = (date) => {
-    console.log(date);
     setStartDate(date);
   };
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     const body = { title, startDate };
-    console.log(body);
     try {
       const res = await fetch('/api/trip', {
         method: 'POST',
@@ -26,7 +24,6 @@ const Trip = () => {
       });
       setTitle('');
       const data = await res.json();
-      console.log(data);
       await Router.push(`/trip/${data.id}`);
     } catch (err) {
       console.error(err);
@@ -45,13 +42,6 @@ const Trip = () => {
           value={title}
           onChange={handleTitleChange}
         />
-        {/* <input
-          type='date'
-          required
-          onChange={(e) => {
-            console.log(e);
-          }}
-        /> */}
         <TableDatePicker
           date={startDate}
           onInputChange={handleStartDateChange}

@@ -5,7 +5,6 @@ import prisma from '../../../../lib/prisma';
 export default withApiAuthRequired(async function createTrip(req, res) {
   const { id } = req.query;
   const { user } = getSession(req, res);
-  console.log(id, user);
   try {
     const trip = await prisma.trip.findUnique({
       where: {

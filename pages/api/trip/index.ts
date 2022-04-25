@@ -5,7 +5,6 @@ import prisma from '../../../lib/prisma';
 export default withApiAuthRequired(async function createTrip(req, res) {
   const { title, startDate } = req.body;
   const { user } = getSession(req, res);
-  console.log(user);
   try {
     const newTrip = await prisma.trip.create({
       data: {
@@ -14,11 +13,11 @@ export default withApiAuthRequired(async function createTrip(req, res) {
         authorId: user.sub,
       },
     });
-    console.log(newTrip);
 
     const newFirstDay = await prisma.dailyPlan.create({
       data: {
         tripId: newTrip.id,
+        notes: '',
       },
     });
     console.log('TRIP CREATED', newTrip);

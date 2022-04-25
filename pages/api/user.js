@@ -1,7 +1,7 @@
 import prisma from '../../lib/prisma';
 
 const userHandler = async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   const {
     body: { id, name },
     method,
