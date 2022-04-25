@@ -33,20 +33,6 @@ const Home: React.FC<Props> = (props) => {
         <meta name='description' content='Inspiration for your next getaway' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <nav>
-        {/* Using a href because this is  call to an API to login */}
-        {user ? (
-          <a href='/api/auth/logout'>Logout</a>
-        ) : (
-          <a href='/api/auth/login'>Login</a>
-        )}
-      </nav>
-      {user && (
-        <div>
-          <img src={user.picture} alt={user.name} />
-          <h2>Hello {user.name}</h2>
-        </div>
-      )}
       <main>
         <h1 className='text-3xl px-2 py-4 bg-slate-400'>Epic Trips</h1>
         {props.trips.map((trip) => (
