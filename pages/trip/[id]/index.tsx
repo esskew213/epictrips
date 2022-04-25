@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { GetServerSideProps } from 'next';
-import prisma from '../../../lib/prisma';
-import Id from '../../api/trip/[id]';
 import { useRouter } from 'next/router';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 
@@ -25,6 +22,9 @@ const TripDetails = () => {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
         });
+        if (res.status === 401) {
+          router.push('/');
+        }
         const data = await res.json();
         console.log(data);
         setDate(data.dateStr);

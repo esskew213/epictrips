@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import prisma from '../../../lib/prisma';
-import { useRouter } from 'next/router';
-
+import Router, { useRouter } from 'next/router';
+import { getSession } from '@auth0/nextjs-auth0';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const id = parseInt(context.params.id);
+  const { req, res } = context;
+  const { user } = getSession(req, res);
   // retrieve the trip
   const trip = await prisma.trip.findUnique({
     where: { id: id },
   });
+
   const options = {
     weekday: 'short',
     year: 'numeric',

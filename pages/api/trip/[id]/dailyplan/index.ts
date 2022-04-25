@@ -5,7 +5,6 @@ import prisma from '../../../../../lib/prisma';
 export default withApiAuthRequired(async function createDailyPlan(req, res) {
   // get trip id
   const { method } = req;
-
   const { user } = getSession(req, res);
 
   if (method === 'POST') {
@@ -56,6 +55,9 @@ export default withApiAuthRequired(async function createDailyPlan(req, res) {
       where: { id: parseInt(id) },
     });
 
+    if (trip.authorId !== user.sub) {
+      res.status(401).json({ status: 401 });
+    }
     const options = {
       weekday: 'short',
       year: 'numeric',

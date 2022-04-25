@@ -24,7 +24,8 @@ type Props = {
 
 const Home: React.FC<Props> = (props) => {
   const { user, error, isLoading } = useUser();
-
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>{error.message}</div>;
   return (
     <div className=''>
       <Head>
@@ -34,14 +35,16 @@ const Home: React.FC<Props> = (props) => {
       </Head>
       <nav>
         {/* Using a href because this is  call to an API to login */}
-        <a href='/api/auth/login'>Login</a>
-        <a href='/api/auth/logout'>Logout</a>
+        {user ? (
+          <a href='/api/auth/logout'>Logout</a>
+        ) : (
+          <a href='/api/auth/login'>Login</a>
+        )}
       </nav>
       {user && (
         <div>
           <img src={user.picture} alt={user.name} />
-          <h2>{user.name}</h2>
-          <p>{user.email}</p>
+          <h2>Hello {user.name}</h2>
         </div>
       )}
       <main>
