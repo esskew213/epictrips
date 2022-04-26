@@ -56,7 +56,7 @@ export default withApiAuthRequired(async function createDailyPlan(req, res) {
     });
 
     if (trip.authorId !== user.sub) {
-      res.status(401).json({ status: 401 });
+      res.status(401);
     }
     const options = {
       weekday: 'short',

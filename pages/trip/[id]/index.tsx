@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
-
+import Loader from '../../../components/Loader';
 //*********************************//
 //*********** COMPONENT ***********//
 //*********************************//
@@ -11,6 +11,7 @@ const TripDetails = () => {
   console.log(id);
   const initialState = {};
   const [notes, setNotes] = useState('');
+  const [pageLoad, setPageLoad] = useState(true);
   const [dailyPlans, setDailyPlans] = useState([]);
   const [trip, setTrip] = useState({});
   const [date, setDate] = useState('');
@@ -24,6 +25,7 @@ const TripDetails = () => {
         });
         if (res.status === 401) {
           router.push('/');
+          return;
         }
         const data = await res.json();
         console.log(data);
@@ -37,6 +39,7 @@ const TripDetails = () => {
         console.log(initialState);
         setNotes(initialState);
         setRequireReload(false);
+        setPageLoad(false);
       } catch (err) {
         console.error(err);
       }
@@ -94,7 +97,7 @@ const TripDetails = () => {
     }
     router.push(`/trip/${trip.id}/summary`);
   };
-
+  if (pageLoad) return <Loader />;
   return (
     <div>
       <h1 className='text-3xl'>Add details to {trip?.title || 'your trip'}</h1>

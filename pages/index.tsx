@@ -26,12 +26,7 @@ type Props = {
 
 const Home: React.FC<Props> = (props) => {
   const { user, error, isLoading } = useUser();
-  if (isLoading)
-    return (
-      <div className='w-max-screen h-max-screen flex items-center justify-center'>
-        <Loader />
-      </div>
-    );
+  if (isLoading) return <Loader />;
   if (error) return <div>{error.message}</div>;
   return (
     <div className=''>

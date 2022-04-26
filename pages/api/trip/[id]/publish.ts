@@ -3,8 +3,9 @@ import prisma from '../../../../lib/prisma';
 
 export default withApiAuthRequired(async function createTrip(req, res) {
   const { id } = req.query;
-  const { method } = req;
+  const { method, body } = req;
   const { user } = getSession(req, res);
+  console.log(body);
   if (method === 'PUT') {
     try {
       await prisma.trip.update({
@@ -12,7 +13,7 @@ export default withApiAuthRequired(async function createTrip(req, res) {
           id: parseInt(id),
         },
         data: {
-          public: true,
+          public: body,
         },
       });
       res.json('published');

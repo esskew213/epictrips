@@ -25,7 +25,14 @@ export const getServerSideProps = withPageAuthRequired({
         },
       };
     }
-
+    // if (user.sub !== trip.authorId) {
+    //   return {
+    //     redirect: {
+    //       permanent: false,
+    //       destination: '/',
+    //     },
+    //   };
+    // }
     const options = {
       weekday: 'short',
       year: 'numeric',
@@ -72,6 +79,7 @@ export const getServerSideProps = withPageAuthRequired({
         trip: JSON.parse(JSON.stringify(trip)),
         dateStr,
         dailyPlans: JSON.parse(JSON.stringify(sortedPlans)),
+        user,
       },
     };
   },
@@ -80,29 +88,24 @@ export const getServerSideProps = withPageAuthRequired({
 //*********************************//
 //*********** COMPONENT ***********//
 //*********************************//
-const Summary = ({ trip, dateStr, dailyPlans }) => {
+const Summary = ({ trip, dateStr, dailyPlans, user }) => {
   const router = useRouter();
-  const { user, error, isLoading } = useUser();
   const { public: published } = trip;
   const isAuthor = Boolean(user.sub === trip.authorId);
   console.log(user.sub);
-  if (isLoading)
-    return (
-      <div className='w-max-screen h-max-screen flex items-center justify-center'>
-        <Loader />
-      </div>
-    );
-  if (error) return <div>{error.message}</div>;
   if (!isAuthor && !published) {
     router.push('/');
   }
+
   // runs when user is done with entire page
-  const handlePublish = async (evt) => {
+  const togglePublish = async (evt) => {
     evt.preventDefault();
     try {
+      const body = !published;
       const res = await fetch(`/api/trip/${trip.id}/publish`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
       });
       router.push('/');
     } catch (err) {
@@ -128,8 +131,8 @@ const Summary = ({ trip, dateStr, dailyPlans }) => {
         })}
       {isAuthor && (
         <div>
-          <button className='bg-orange-400' onClick={(e) => handlePublish(e)}>
-            Publish
+          <button className='bg-orange-400' onClick={(e) => togglePublish(e)}>
+            {published ? 'Make Private' : 'Publish'}
           </button>
           <button className='bg-blue-400' onClick={(e) => handleSave()}>
             Save Draft
