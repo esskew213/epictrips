@@ -6,7 +6,7 @@ const Header = () => {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>{error.message}</div>;
   return (
-    <nav className='w-screen bg-slate-300'>
+    <nav className='w-screen bg-cyan-700 px-2 py-4 text-white'>
       {user && (
         <span className='inline-block'>
           <img
@@ -16,10 +16,10 @@ const Header = () => {
           />
           <span>{user.name}</span>
           <Link href='/'>
-            <a className='p-3'>Home</a>
+            <a className='p-3'>Search</a>
           </Link>
           <Link href={`/${user.sub}`}>
-            <a className='p-3'>My Trips</a>
+            <a className='p-3'>My Dashboard</a>
           </Link>
         </span>
       )}
