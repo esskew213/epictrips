@@ -11,9 +11,18 @@ import { TripCardProps } from '../components/TripCard';
 export const getServerSideProps = withPageAuthRequired({
   getServerSideProps: async (context) => {
     const { req, res } = context;
+    const userId = context.params.uid;
     const { user } = getSession(req, res);
+    const isAuthor: Boolean = user.sub === userId;
+    console.log('isAuthor?', isAuthor);
+
+    const author = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+    console.log(author);
+    // find the trips this author has published
     const trips = await prisma.trip.findMany({
-      where: { authorId: user.sub },
+      where: { authorId: userId },
       include: {
         author: {
           select: { name: true },
@@ -21,15 +30,23 @@ export const getServerSideProps = withPageAuthRequired({
       },
     });
     // need to do JSON parse / stringify as next cannot serialize datetime objects
-    return { props: { trips: JSON.parse(JSON.stringify(trips)) } };
+    return {
+      props: {
+        trips: JSON.parse(JSON.stringify(trips)),
+        isAuthor: isAuthor,
+        authorName: author.name,
+      },
+    };
   },
 });
 
 type Props = {
   trips: TripCardProps[];
+  isAuthor: Boolean;
+  authorName: string;
 };
 
-const Home: React.FC<Props> = ({ trips }) => {
+const Profile: React.FC<Props> = ({ trips, isAuthor, authorName }) => {
   const { user, error, isLoading } = useUser();
   if (isLoading)
     return (
@@ -49,7 +66,7 @@ const Home: React.FC<Props> = ({ trips }) => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <main>
-        <h1 className='text-3xl px-2 py-4 bg-slate-400'>My Trips</h1>
+        <h1 className='text-3xl px-2 py-4 bg-slate-400'>{authorName}</h1>
         <h2>Published Trips</h2>
         <div className='flex'>
           {publicTrips.map((trip) => (
@@ -61,20 +78,25 @@ const Home: React.FC<Props> = ({ trips }) => {
             />
           ))}
         </div>
-        <h2>My Drafts</h2>
-        <div className='flex'>
-          {privateTrips.map((trip) => (
-            <TripCard
-              key={trip.id}
-              id={trip.id}
-              author={trip.author}
-              title={trip.title}
-            />
-          ))}
-        </div>
+
+        {isAuthor && (
+          <>
+            <h2>My Drafts</h2>
+            <div className='flex'>
+              {privateTrips.map((trip) => (
+                <TripCard
+                  key={trip.id}
+                  id={trip.id}
+                  author={trip.author}
+                  title={trip.title}
+                />
+              ))}
+            </div>
+          </>
+        )}
       </main>
     </div>
   );
 };
 
-export default Home;
+export default Profile;
