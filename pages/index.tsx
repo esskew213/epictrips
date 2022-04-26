@@ -14,6 +14,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
       author: {
         select: { name: true },
       },
+      tags: true,
     },
   });
   // need to do JSON parse / stringify as next cannot serialize datetime objects
@@ -44,6 +45,7 @@ const Home: React.FC<Props> = (props) => {
               id={trip.id}
               author={trip.author}
               title={trip.title}
+              tags={trip.tags}
             />
           ))}
         </div>

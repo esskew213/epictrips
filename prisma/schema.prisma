@@ -30,13 +30,14 @@ model Trip {
   public Boolean @default(false)
   startDate DateTime? @map(name: "start_date")
   dailyPlan DailyPlan[]
-  tags Tag[]
   likes TripLike[]
     createdAt     DateTime  @default(now()) @map(name: "created_at")
   updatedAt     DateTime  @updatedAt @map(name: "updated_at")
   author    User?   @relation(fields: [authorId], references: [id])
+  budget Budget?
   // this is the foreign key that connects user and trip tables
   authorId  String?
+     tags TripTag[]
 }
 
 model DailyPlan {
@@ -47,8 +48,16 @@ model DailyPlan {
    notes String?
    tripId Int
    trip Trip @relation(fields: [tripId], references: [id])
+
 }
 
+model TripTag {
+     id     Int      @id @default(autoincrement())
+  tripId Int
+   trip Trip @relation(fields: [tripId], references: [id])
+   tag  Tag
+
+}
 model TripLike {
      id     Int      @id @default(autoincrement())
   likedBy User   @relation(fields: [userId], references: [id])

@@ -27,6 +27,7 @@ export const getServerSideProps = withPageAuthRequired({
         author: {
           select: { name: true },
         },
+        tags: true,
       },
     });
     // need to do JSON parse / stringify as next cannot serialize datetime objects
@@ -75,6 +76,7 @@ const Profile: React.FC<Props> = ({ trips, isAuthor, authorName }) => {
               id={trip.id}
               author={trip.author}
               title={trip.title}
+              tags={trip.tags}
             />
           ))}
         </div>
