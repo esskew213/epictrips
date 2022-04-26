@@ -128,6 +128,20 @@ const Summary = ({
   const handleSave = () => {
     router.push('/');
   };
+  const calcDate = ({ startDate }, increment) => {
+    const parsedDate = new Date(startDate);
+    const calculatedDate = new Date(
+      parsedDate.setDate(parsedDate.getDate() + increment)
+    );
+    const options = {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    };
+    return calculatedDate.toLocaleDateString(undefined, options);
+  };
+
   return (
     <div>
       <h1 className='text-3xl'>Trip Summary: {trip.title || 'Your Trip'}</h1>
@@ -144,7 +158,9 @@ const Summary = ({
         dailyPlans.map((plan, idx) => {
           return (
             <div className='bg-slate-200 p-6' key={plan.id}>
-              <h4>Day {idx + 1}</h4>
+              <h4>
+                Day {idx + 1}: {calcDate(trip, idx + 1)}
+              </h4>
               <p>{plan.notes}</p>
             </div>
           );
