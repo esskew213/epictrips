@@ -8,6 +8,8 @@ import { GetServerSideProps } from 'next';
 import { useUser } from '@auth0/nextjs-auth0';
 import prisma from '../lib/prisma';
 import { TripCardProps } from '../components/TripCard';
+import Link from 'next/link';
+
 export const getServerSideProps = withPageAuthRequired({
   getServerSideProps: async (context) => {
     const { req, res } = context;
@@ -77,6 +79,7 @@ const Profile: React.FC<Props> = ({ trips, isAuthor, authorName }) => {
               author={trip.author}
               title={trip.title}
               tags={trip.tags}
+              budget={trip.budget}
             />
           ))}
         </div>
@@ -84,6 +87,11 @@ const Profile: React.FC<Props> = ({ trips, isAuthor, authorName }) => {
         {isAuthor && (
           <>
             <h2>My Drafts</h2>
+            <button>
+              <Link href='/trip'>
+                <a className='btn'>Add Trip</a>
+              </Link>
+            </button>
             <div className='flex'>
               {privateTrips.map((trip) => (
                 <TripCard
@@ -91,6 +99,8 @@ const Profile: React.FC<Props> = ({ trips, isAuthor, authorName }) => {
                   id={trip.id}
                   author={trip.author}
                   title={trip.title}
+                  tags={trip.tags}
+                  budget={trip.budget}
                 />
               ))}
             </div>

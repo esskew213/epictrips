@@ -7,6 +7,7 @@ import Loader from '../../components/Loader';
 
 const Trip = () => {
   const [title, setTitle] = useState('');
+  const [budget, setBudget] = useState('BUDGET');
   const [startDate, setStartDate] = useState(new Date());
   const [tags, setTags] = useState({
     HIKING: false,
@@ -27,13 +28,16 @@ const Trip = () => {
   const handleStartDateChange = (date: Date) => {
     setStartDate(date);
   };
+  const handleBudgetChange = (e) => {
+    setBudget(e.target.value);
+  };
   const handleTagsChange = (e) => {
     setTags({ ...tags, [e.target.value]: !tags[e.target.value] });
     console.log(tags);
   };
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    const body = { title, startDate, tags };
+    const body = { title, startDate, tags, budget };
     try {
       const res = await fetch('/api/trip', {
         method: 'POST',
@@ -50,23 +54,46 @@ const Trip = () => {
   return (
     <>
       <div>
-        <h2>Create new trip</h2>
+        <h2 className='text-2xl py-4 mb-4'>Create new trip</h2>
       </div>
       <form onSubmit={handleSubmit}>
+        <label htmlFor='title' className='mr-4'>
+          Give your trip a title:
+        </label>
         <input
-          className='form-input'
+          id='title'
+          autoFocus
+          className='form-input border-slate-100 rounded-md mb-4'
           placeholder='title of your trip'
           type='text'
           required
           value={title}
           onChange={handleTitleChange}
         />
-        <TableDatePicker
-          date={startDate}
-          onInputChange={handleStartDateChange}
-        />
-        <fieldset>
-          <legend>Select tags</legend>
+        <fieldset className='mb-4'>
+          <span className='mr-4'>When does your trip start?</span>
+          <TableDatePicker
+            date={startDate}
+            onInputChange={handleStartDateChange}
+          />
+        </fieldset>
+        <fieldset className='mb-4'>
+          <label className='mr-4' htmlFor='budget'>
+            How fancy is your trip?
+          </label>
+          <select
+            className='border-slate-100 rounded-md'
+            onChange={handleBudgetChange}
+            name='budget'
+            id='budget'
+          >
+            <option value='BUDGET'>Budget</option>
+            <option value='MODERATE'>Moderate</option>
+            <option value='LUXURIOUS'>Luxurious</option>
+          </select>
+        </fieldset>
+        <fieldset className='mb-4'>
+          <legend>Categorise your trip!</legend>
           <input
             onChange={handleTagsChange}
             type='checkbox'
@@ -132,7 +159,9 @@ const Trip = () => {
           <label htmlFor='chill'>Chill</label>
         </fieldset>
         <div>
-          <button>Create</button>
+          <button className='px-2 py-1 rounded-md bg-yellow-400 transition ease-in-out duration-150 hover:shadow-md hover:-translate-y-1 hover:bg-orange-400'>
+            Create
+          </button>
         </div>
       </form>
     </>

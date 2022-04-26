@@ -11,6 +11,7 @@ export default function TableDatePicker({ onInputChange, date }) {
       minDate={new Date()}
       format='yyyy-MM-dd'
       onChange={onInputChange}
+      required
     />
   );
 }

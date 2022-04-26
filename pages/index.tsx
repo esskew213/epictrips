@@ -46,6 +46,7 @@ const Home: React.FC<Props> = (props) => {
               author={trip.author}
               title={trip.title}
               tags={trip.tags}
+              budget={trip.budget}
             />
           ))}
         </div>
