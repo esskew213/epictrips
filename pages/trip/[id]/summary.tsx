@@ -120,7 +120,7 @@ const Summary = ({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
-      router.push('/');
+      router.push(`/${authorId}`);
     } catch (err) {
       console.error(err);
     }

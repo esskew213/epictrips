@@ -29,28 +29,29 @@ const TripCard = ({ id, title, author, tags, budget }) => {
           <div className='px-2 mt-2'>
             <p className='text-lg tracking-wider font-light '>{title}</p>
             <p className='text-xs font-semibold'>by {author.name}</p>
-            <p className='absolute bottom-2 tracking-widest text-lg right-2 font-semibold normalcase'>
-              {budget &&
-                (budget === 'BUDGET'
+            {budget && (
+              <p className='absolute bottom-2 bg-sky-500 text-white rounded-full px-2 tracking-widest text-md right-2 font-semibold normalcase'>
+                {budget === 'BUDGET'
                   ? '$'
                   : budget === 'MODERATE'
                   ? '$$'
                   : budget === 'LUXURIOUS'
                   ? '$$$'
-                  : null)}
-            </p>
-            <p className='absolute flex flex-wrap justify-end top-2 right-2 w-full'>
-              {tags &&
-                tags.map((tag, idx) => (
-                  <span
-                    className='rounded-full bg-cyan-700 px-2 py-1 tracking-wide text-xs ml-2 mb-2 text-white'
-                    key={idx}
-                  >
-                    {tag.tag}
-                  </span>
-                ))}
-            </p>
+                  : null}
+              </p>
+            )}
           </div>
+          <p className='absolute flex flex-wrap justify-end top-2 right-2 w-full'>
+            {tags &&
+              tags.map((tag, idx) => (
+                <span
+                  className='rounded-full bg-cyan-700 px-2 py-1 tracking-wide text-xs ml-2 mb-2 text-white'
+                  key={idx}
+                >
+                  {tag.tag}
+                </span>
+              ))}
+          </p>
         </div>
       </a>
     </Link>

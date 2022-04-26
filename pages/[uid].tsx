@@ -71,7 +71,9 @@ const Profile: React.FC<Props> = ({ trips, isAuthor, authorName }) => {
       <main className='w-screen'>
         <h1 className='text-3xl px-2 py-4 bg-slate-400'>{authorName}</h1>
         <div className='container w-max mx-auto'>
-          <h1>Published Trips</h1>
+          <h2 className='text-xl uppercase tracking-wider mr-4'>
+            Published Trips
+          </h2>
           <div className='grid place-content-between xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-x-12 gap-y-0'>
             {publicTrips.map((trip) => (
               <TripCard
@@ -87,13 +89,16 @@ const Profile: React.FC<Props> = ({ trips, isAuthor, authorName }) => {
 
           {isAuthor && (
             <>
-              <h2>My Drafts</h2>
-              <button>
+              <h2 className='xs:block sm:inline-block text-xl uppercase tracking-wider mr-4'>
+                My Drafts
+              </h2>
+              <button className=' xs:block sm:inline-block px-2 py-1 rounded-md bg-cyan-500 transition ease-in-out duration-150 hover:shadow-md hover:-translate-y-1 hover:text-white hover:bg-teal-700'>
                 <Link href='/trip'>
-                  <a className='btn'>Add Trip</a>
+                  <a>Add Trip</a>
                 </Link>
               </button>
-              <div className='flex'>
+
+              <div className='grid place-content-between xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-x-12 gap-y-0'>
                 {privateTrips.map((trip) => (
                   <TripCard
                     key={trip.id}

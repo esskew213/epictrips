@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-.btn {
-  @apply bg-yellow-400 hover:bg-orange-400 transition ease-in-out duration-150;
+@layer components {
+  .btn {
+    @apply px-2 py-1 rounded-md bg-yellow-400 transition ease-in-out duration-150 hover:shadow-md hover:-translate-y-1 hover:bg-orange-400;
+  }
 }
