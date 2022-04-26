@@ -133,7 +133,10 @@ const TripDetails = () => {
                     handleNotesChange(e, plan.id);
                   }}
                 />
-                <button onClick={(evt) => handleAddDay(evt, plan.id)}>
+                <button
+                  disabled={requireReload}
+                  onClick={(evt) => handleAddDay(evt, plan.id)}
+                >
                   Add day
                 </button>
               </form>

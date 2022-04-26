@@ -104,12 +104,19 @@ const Summary = ({
   authorName,
   authorId,
 }) => {
+  const { user, error, isLoading } = useUser();
   const router = useRouter();
   const { public: published } = trip;
   if (!isAuthor && !published) {
     router.push('/');
   }
-
+  if (isLoading)
+    return (
+      <div className='w-max-screen h-max-screen flex items-center justify-center'>
+        <Loader />
+      </div>
+    );
+  if (error) return <div>{error.message}</div>;
   // runs when user is done with entire page
   const togglePublish = async (evt) => {
     evt.preventDefault();
@@ -126,7 +133,7 @@ const Summary = ({
     }
   };
   const handleSave = () => {
-    router.push('/');
+    router.push(`/${user.sub}`);
   };
   const calcDate = ({ startDate }, increment) => {
     const parsedDate = new Date(startDate);
@@ -167,11 +174,17 @@ const Summary = ({
         })}
       {isAuthor && (
         <div>
-          <button className='bg-orange-400' onClick={(e) => togglePublish(e)}>
-            {published ? 'Make Private' : 'Publish'}
+          <button
+            className='bg-blue-400'
+            onClick={(e) => router.push(`/trip/${trip.id}`)}
+          >
+            Edit
           </button>
           <button className='bg-blue-400' onClick={(e) => handleSave()}>
             Save Draft
+          </button>
+          <button className='bg-orange-400' onClick={(e) => togglePublish(e)}>
+            {published ? 'Make Private' : 'Publish'}
           </button>
         </div>
       )}

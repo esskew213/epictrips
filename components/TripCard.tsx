@@ -13,6 +13,16 @@ export type TripCardProps = {
 };
 
 const TripCard = ({ id, title, author, tags, budget }) => {
+  const sortedTags = tags.sort((a, b) => {
+    if (a.tag < b.tag) {
+      return -1;
+    }
+    if (a.tag > b.tag) {
+      return 1;
+    }
+    return 0;
+  });
+
   return (
     <Link href={`/trip/${id}/summary`}>
       <a>
@@ -43,7 +53,7 @@ const TripCard = ({ id, title, author, tags, budget }) => {
           </div>
           <p className='absolute flex flex-wrap justify-end top-2 right-2 w-full'>
             {tags &&
-              tags.map((tag, idx) => (
+              sortedTags.map((tag, idx) => (
                 <span
                   className='rounded-full bg-cyan-700 px-2 py-1 tracking-wide text-xs ml-2 mb-2 text-white'
                   key={idx}

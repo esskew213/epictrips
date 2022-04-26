@@ -9,6 +9,7 @@ import { useUser } from '@auth0/nextjs-auth0';
 import prisma from '../lib/prisma';
 import { TripCardProps } from '../components/TripCard';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 export const getServerSideProps = withPageAuthRequired({
   getServerSideProps: async (context) => {
@@ -50,7 +51,11 @@ type Props = {
 };
 
 const Profile: React.FC<Props> = ({ trips, isAuthor, author }) => {
+  const router = useRouter();
+  const [bio, setBio] = useState(author.bio);
+  const [editing, setEditing] = useState(false);
   const { user, error, isLoading } = useUser();
+  const { uid } = router.query;
   if (isLoading)
     return (
       <div className='w-max-screen h-max-screen flex items-center justify-center'>
@@ -61,8 +66,7 @@ const Profile: React.FC<Props> = ({ trips, isAuthor, author }) => {
 
   const publicTrips = trips.filter((trip) => trip.public === true);
   const privateTrips = trips.filter((trip) => trip.public === false);
-  const [bio, setBio] = useState(author.bio);
-  const [editing, setEditing] = useState(false);
+
   const handleChange = (e) => {
     setBio(e.target.value);
   };
@@ -72,12 +76,14 @@ const Profile: React.FC<Props> = ({ trips, isAuthor, author }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/[uid]', {
-        method: 'POST',
+      const res = await fetch(`/api/${uid}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(bio),
       });
       toggleEditing();
+      router.replace(router.asPath);
+      // toggleEditing();
     } catch (err) {
       console.error(err);
     }
@@ -95,36 +101,41 @@ const Profile: React.FC<Props> = ({ trips, isAuthor, author }) => {
           <div>
             {editing ? (
               <div>
-                <form>
+                <form onSubmit={handleSubmit}>
                   <input
                     onChange={handleChange}
                     value={bio}
                     type='text'
                   ></input>
+                  <button className='text-sm text-cyan-500 xs:block sm:inline-block px-1 py-1 rounded-md border border-cyan-500 transition ease-in-out duration-150 hover:shadow-md hover:-translate-y-1 hover:text-white hover:bg-teal-700'>
+                    Save Bio
+                  </button>
                 </form>
               </div>
             ) : (
               <div>{author?.bio || 'Bio'}</div>
             )}
-            <button
-              onClick={editing ? handleSubmit : toggleEditing}
-              className='text-sm xs:block sm:inline-block px-1 py-1 rounded-md border border-cyan-500 transition ease-in-out duration-150 hover:shadow-md hover:-translate-y-1 hover:text-white hover:bg-teal-700'
-            >
-              {editing ? 'Save' : 'Edit'} Bio
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                className='h-5 w-5 text-slate-400 inline-block ml-2 -translate-y-0.5'
-                viewBox='0 0 20 20'
-                fill='currentColor'
+            {editing ? null : (
+              <button
+                onClick={toggleEditing}
+                className='text-sm text-cyan-500  xs:block sm:inline-block px-1 py-1 rounded-md border border-cyan-500 transition ease-in-out duration-150 hover:shadow-md hover:-translate-y-1 hover:text-white hover:bg-cyan-500'
               >
-                <path d='M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z' />
-                <path
-                  fillRule='evenodd'
-                  d='M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z'
-                  clipRule='evenodd'
-                />
-              </svg>
-            </button>
+                Edit Bio
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  className='h-5 w-5 text-cyan-500 inline-block ml-2 -translate-y-0.5'
+                  viewBox='0 0 20 20'
+                  fill='currentColor'
+                >
+                  <path d='M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z' />
+                  <path
+                    fillRule='evenodd'
+                    d='M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z'
+                    clipRule='evenodd'
+                  />
+                </svg>
+              </button>
+            )}
           </div>
           <h2 className='text-xl uppercase tracking-wider mr-4 border-b border-b-slate-200'>
             Published Trips
