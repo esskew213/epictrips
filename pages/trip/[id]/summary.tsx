@@ -16,6 +16,7 @@ export const getServerSideProps = withPageAuthRequired({
     const trip = await prisma.trip.findUnique({
       where: { id: id },
     });
+    // if trip is not found, redirect user to home
     if (!trip) {
       return {
         redirect: {
@@ -82,7 +83,9 @@ export const getServerSideProps = withPageAuthRequired({
 const Summary = ({ trip, dateStr, dailyPlans }) => {
   const router = useRouter();
   const { user, error, isLoading } = useUser();
-
+  const { public: published } = trip;
+  const isAuthor = Boolean(user.sub === trip.authorId);
+  console.log(user.sub);
   if (isLoading)
     return (
       <div className='w-max-screen h-max-screen flex items-center justify-center'>
@@ -90,6 +93,9 @@ const Summary = ({ trip, dateStr, dailyPlans }) => {
       </div>
     );
   if (error) return <div>{error.message}</div>;
+  if (!isAuthor && !published) {
+    router.push('/');
+  }
   // runs when user is done with entire page
   const handlePublish = async (evt) => {
     evt.preventDefault();
@@ -120,14 +126,16 @@ const Summary = ({ trip, dateStr, dailyPlans }) => {
             </div>
           );
         })}
-      <div>
-        <button className='bg-orange-400' onClick={(e) => handlePublish(e)}>
-          Publish
-        </button>
-        <button className='bg-blue-400' onClick={(e) => handleSave()}>
-          Save Draft
-        </button>
-      </div>
+      {isAuthor && (
+        <div>
+          <button className='bg-orange-400' onClick={(e) => handlePublish(e)}>
+            Publish
+          </button>
+          <button className='bg-blue-400' onClick={(e) => handleSave()}>
+            Save Draft
+          </button>
+        </div>
+      )}
     </div>
   );
 };
