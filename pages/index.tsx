@@ -36,19 +36,21 @@ const Home: React.FC<Props> = (props) => {
         <meta name='description' content='Inspiration for your next getaway' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <main>
+      <main className='w-screen'>
         <h1 className='text-3xl px-2 py-4 bg-slate-400'>Epic Trips</h1>
-        <div className='flex'>
-          {props.trips.map((trip) => (
-            <TripCard
-              key={trip.id}
-              id={trip.id}
-              author={trip.author}
-              title={trip.title}
-              tags={trip.tags}
-              budget={trip.budget}
-            />
-          ))}
+        <div className='container w-max mx-auto'>
+          <div className='grid place-content-between xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-x-12 gap-y-0'>
+            {props.trips.map((trip) => (
+              <TripCard
+                key={trip.id}
+                id={trip.id}
+                author={trip.author}
+                title={trip.title}
+                tags={trip.tags}
+                budget={trip.budget}
+              />
+            ))}
+          </div>
         </div>
       </main>
     </div>

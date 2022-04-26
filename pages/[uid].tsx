@@ -68,44 +68,46 @@ const Profile: React.FC<Props> = ({ trips, isAuthor, authorName }) => {
         <meta name='description' content='Inspiration for your next getaway' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <main>
+      <main className='w-screen'>
         <h1 className='text-3xl px-2 py-4 bg-slate-400'>{authorName}</h1>
-        <h2>Published Trips</h2>
-        <div className='flex'>
-          {publicTrips.map((trip) => (
-            <TripCard
-              key={trip.id}
-              id={trip.id}
-              author={trip.author}
-              title={trip.title}
-              tags={trip.tags}
-              budget={trip.budget}
-            />
-          ))}
-        </div>
+        <div className='container w-max mx-auto'>
+          <h1>Published Trips</h1>
+          <div className='grid place-content-between xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-x-12 gap-y-0'>
+            {publicTrips.map((trip) => (
+              <TripCard
+                key={trip.id}
+                id={trip.id}
+                author={trip.author}
+                title={trip.title}
+                tags={trip.tags}
+                budget={trip.budget}
+              />
+            ))}
+          </div>
 
-        {isAuthor && (
-          <>
-            <h2>My Drafts</h2>
-            <button>
-              <Link href='/trip'>
-                <a className='btn'>Add Trip</a>
-              </Link>
-            </button>
-            <div className='flex'>
-              {privateTrips.map((trip) => (
-                <TripCard
-                  key={trip.id}
-                  id={trip.id}
-                  author={trip.author}
-                  title={trip.title}
-                  tags={trip.tags}
-                  budget={trip.budget}
-                />
-              ))}
-            </div>
-          </>
-        )}
+          {isAuthor && (
+            <>
+              <h2>My Drafts</h2>
+              <button>
+                <Link href='/trip'>
+                  <a className='btn'>Add Trip</a>
+                </Link>
+              </button>
+              <div className='flex'>
+                {privateTrips.map((trip) => (
+                  <TripCard
+                    key={trip.id}
+                    id={trip.id}
+                    author={trip.author}
+                    title={trip.title}
+                    tags={trip.tags}
+                    budget={trip.budget}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
       </main>
     </div>
   );
