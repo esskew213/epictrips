@@ -29,7 +29,7 @@ type Props = {
   trips: TripCardProps[];
 };
 
-const Home: React.FC<Props> = (props) => {
+const Home: React.FC<Props> = ({ trips }) => {
   const { user, error, isLoading } = useUser();
   if (isLoading)
     return (
@@ -38,17 +38,32 @@ const Home: React.FC<Props> = (props) => {
       </div>
     );
   if (error) return <div>{error.message}</div>;
+
+  const publicTrips = trips.filter((trip) => trip.public === true);
+  const privateTrips = trips.filter((trip) => trip.public === false);
   return (
     <div className=''>
       <Head>
-        <title>Epic Trips</title>
+        <title>Epic Trip | My Trips</title>
         <meta name='description' content='Inspiration for your next getaway' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <main>
         <h1 className='text-3xl px-2 py-4 bg-slate-400'>My Trips</h1>
+        <h2>Published Trips</h2>
         <div className='flex'>
-          {props.trips.map((trip) => (
+          {publicTrips.map((trip) => (
+            <TripCard
+              key={trip.id}
+              id={trip.id}
+              author={trip.author}
+              title={trip.title}
+            />
+          ))}
+        </div>
+        <h2>My Drafts</h2>
+        <div className='flex'>
+          {privateTrips.map((trip) => (
             <TripCard
               key={trip.id}
               id={trip.id}

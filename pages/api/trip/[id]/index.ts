@@ -14,7 +14,7 @@ export default withApiAuthRequired(async function createTrip(req, res) {
 
     // check if authorised
     if (trip.authorId !== user.sub) {
-      res.status(401).json({ status: '401' });
+      res.status(401);
     }
     console.log(trip);
     res.json(trip);
