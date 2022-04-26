@@ -18,7 +18,7 @@ const Header = () => {
           <Link href='/'>
             <a className='p-3'>Home</a>
           </Link>
-          <Link href='/me'>
+          <Link href={`/${user.sub}`}>
             <a className='p-3'>My Trips</a>
           </Link>
         </span>

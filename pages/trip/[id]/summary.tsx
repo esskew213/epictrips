@@ -6,7 +6,7 @@ import { getSession } from '@auth0/nextjs-auth0';
 import { useUser } from '@auth0/nextjs-auth0';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Loader from '../../../components/Loader';
-
+import Link from 'next/link';
 export const getServerSideProps = withPageAuthRequired({
   getServerSideProps: async (context) => {
     const id = parseInt(context.params.id);
@@ -33,6 +33,12 @@ export const getServerSideProps = withPageAuthRequired({
     //     },
     //   };
     // }
+
+    const author = await prisma.user.findUnique({
+      where: { id: trip.authorId },
+    });
+    const isAuthor = Boolean(user.sub === trip.authorId);
+
     const options = {
       weekday: 'short',
       year: 'numeric',
@@ -79,7 +85,9 @@ export const getServerSideProps = withPageAuthRequired({
         trip: JSON.parse(JSON.stringify(trip)),
         dateStr,
         dailyPlans: JSON.parse(JSON.stringify(sortedPlans)),
-        user,
+        isAuthor,
+        authorName: author.name,
+        authorId: author.id,
       },
     };
   },
@@ -88,11 +96,16 @@ export const getServerSideProps = withPageAuthRequired({
 //*********************************//
 //*********** COMPONENT ***********//
 //*********************************//
-const Summary = ({ trip, dateStr, dailyPlans, user }) => {
+const Summary = ({
+  trip,
+  dateStr,
+  dailyPlans,
+  isAuthor,
+  authorName,
+  authorId,
+}) => {
   const router = useRouter();
   const { public: published } = trip;
-  const isAuthor = Boolean(user.sub === trip.authorId);
-  console.log(user.sub);
   if (!isAuthor && !published) {
     router.push('/');
   }
@@ -118,7 +131,14 @@ const Summary = ({ trip, dateStr, dailyPlans, user }) => {
   return (
     <div>
       <h1 className='text-3xl'>Trip Summary: {trip.title || 'Your Trip'}</h1>
-      <h2>{`by ${user.name}` || null}</h2>
+
+      <h2>
+        by{' '}
+        <Link href={`/${authorId}`}>
+          <a>{authorName}</a>
+        </Link>
+      </h2>
+
       <h4>{dateStr || null}</h4>
       {dailyPlans &&
         dailyPlans.map((plan, idx) => {
