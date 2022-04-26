@@ -1,24 +1,29 @@
 import Head from 'next/head';
 import React from 'react';
-
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
+import { getSession } from '@auth0/nextjs-auth0';
 import Loader from '../components/Loader';
 import TripCard from '../components/TripCard';
 import { GetServerSideProps } from 'next';
 import { useUser } from '@auth0/nextjs-auth0';
 import prisma from '../lib/prisma';
 import { TripCardProps } from '../components/TripCard';
-export const getServerSideProps: GetServerSideProps = async () => {
-  const trips = await prisma.trip.findMany({
-    where: { public: true },
-    include: {
-      author: {
-        select: { name: true },
+export const getServerSideProps = withPageAuthRequired({
+  getServerSideProps: async (context) => {
+    const { req, res } = context;
+    const { user } = getSession(req, res);
+    const trips = await prisma.trip.findMany({
+      where: { authorId: user.sub },
+      include: {
+        author: {
+          select: { name: true },
+        },
       },
-    },
-  });
-  // need to do JSON parse / stringify as next cannot serialize datetime objects
-  return { props: { trips: JSON.parse(JSON.stringify(trips)) } };
-};
+    });
+    // need to do JSON parse / stringify as next cannot serialize datetime objects
+    return { props: { trips: JSON.parse(JSON.stringify(trips)) } };
+  },
+});
 
 type Props = {
   trips: TripCardProps[];
@@ -41,7 +46,7 @@ const Home: React.FC<Props> = (props) => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <main>
-        <h1 className='text-3xl px-2 py-4 bg-slate-400'>Epic Trips</h1>
+        <h1 className='text-3xl px-2 py-4 bg-slate-400'>My Trips</h1>
         <div className='flex'>
           {props.trips.map((trip) => (
             <TripCard

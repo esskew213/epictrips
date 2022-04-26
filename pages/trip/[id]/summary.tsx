@@ -7,64 +7,74 @@ import { useUser } from '@auth0/nextjs-auth0';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Loader from '../../../components/Loader';
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const id = parseInt(context.params.id);
-  const { req, res } = context;
-  //   const { user } = getSession(req, res);
-  // retrieve the trip
-  const trip = await prisma.trip.findUnique({
-    where: { id: id },
-  });
-
-  const options = {
-    weekday: 'short',
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  };
-  const dateStr = trip.startDate.toLocaleDateString(undefined, options);
-
-  // retrieve daily plans associated with that trip
-  const dailyPlans = await prisma.dailyPlan.findMany({
-    where: { tripId: id },
-    include: {
-      trip: true, // Return all fields
-    },
-  });
-
-  // Get predecessor id to daily plan mapping
-  const predecessorIdToPlanMap = dailyPlans.reduce(function (map, plan) {
-    map[plan.predecessorId] = plan;
-    return map;
-  }, {});
-
-  // Find day 1
-  let firstPlan = null;
-  for (let plan of dailyPlans) {
-    if (plan.predecessorId === null) {
-      firstPlan = plan;
+export const getServerSideProps = withPageAuthRequired({
+  getServerSideProps: async (context) => {
+    const id = parseInt(context.params.id);
+    const { req, res } = context;
+    const { user } = getSession(req, res);
+    // retrieve the trip
+    const trip = await prisma.trip.findUnique({
+      where: { id: id },
+    });
+    if (!trip) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/',
+        },
+      };
     }
-  }
 
-  // Traverse the daily plans from day 1 to last day
-  const sortedPlans = [];
-  let currentPlan = firstPlan;
-  while (true) {
-    sortedPlans.push(currentPlan);
-    currentPlan = predecessorIdToPlanMap[currentPlan.id];
-    if (!currentPlan) {
-      break;
+    const options = {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    };
+    const dateStr = trip.startDate.toLocaleDateString(undefined, options);
+
+    // retrieve daily plans associated with that trip
+    const dailyPlans = await prisma.dailyPlan.findMany({
+      where: { tripId: id },
+      include: {
+        trip: true, // Return all fields
+      },
+    });
+
+    // Get predecessor id to daily plan mapping
+    const predecessorIdToPlanMap = dailyPlans.reduce(function (map, plan) {
+      map[plan.predecessorId] = plan;
+      return map;
+    }, {});
+
+    // Find day 1
+    let firstPlan = null;
+    for (let plan of dailyPlans) {
+      if (plan.predecessorId === null) {
+        firstPlan = plan;
+      }
     }
-  }
 
-  return {
-    props: {
-      trip: JSON.parse(JSON.stringify(trip)),
-      dateStr,
-      dailyPlans: JSON.parse(JSON.stringify(sortedPlans)),
-    },
-  };
-};
+    // Traverse the daily plans from day 1 to last day
+    const sortedPlans = [];
+    let currentPlan = firstPlan;
+    while (true) {
+      sortedPlans.push(currentPlan);
+      currentPlan = predecessorIdToPlanMap[currentPlan.id];
+      if (!currentPlan) {
+        break;
+      }
+    }
+
+    return {
+      props: {
+        trip: JSON.parse(JSON.stringify(trip)),
+        dateStr,
+        dailyPlans: JSON.parse(JSON.stringify(sortedPlans)),
+      },
+    };
+  },
+});
 
 //*********************************//
 //*********** COMPONENT ***********//
@@ -72,6 +82,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const Summary = ({ trip, dateStr, dailyPlans }) => {
   const router = useRouter();
   const { user, error, isLoading } = useUser();
+
   if (isLoading)
     return (
       <div className='w-max-screen h-max-screen flex items-center justify-center'>
@@ -121,4 +132,4 @@ const Summary = ({ trip, dateStr, dailyPlans }) => {
   );
 };
 
-export default withPageAuthRequired(Summary);
+export default Summary;
