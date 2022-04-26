@@ -1,6 +1,8 @@
 import Head from 'next/head';
 import React from 'react';
 import Image from 'next/image';
+import Loader from '../components/Loader';
+import TripCard from '../components/TripCard';
 import { GetServerSideProps } from 'next';
 import { useUser } from '@auth0/nextjs-auth0';
 import prisma from '../lib/prisma';
@@ -24,7 +26,12 @@ type Props = {
 
 const Home: React.FC<Props> = (props) => {
   const { user, error, isLoading } = useUser();
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading)
+    return (
+      <div className='w-max-screen h-max-screen flex items-center justify-center'>
+        <Loader />
+      </div>
+    );
   if (error) return <div>{error.message}</div>;
   return (
     <div className=''>
@@ -35,11 +42,16 @@ const Home: React.FC<Props> = (props) => {
       </Head>
       <main>
         <h1 className='text-3xl px-2 py-4 bg-slate-400'>Epic Trips</h1>
-        {props.trips.map((trip) => (
-          <div key={trip.id}>
-            {trip.title} by {trip.author.name}
-          </div>
-        ))}
+        <div className='flex'>
+          {props.trips.map((trip) => (
+            <TripCard
+              key={trip.id}
+              id={trip.id}
+              author={trip.author}
+              title={trip.title}
+            />
+          ))}
+        </div>
       </main>
     </div>
   );

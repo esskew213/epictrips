@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import React from 'react';
 
 export type TripCardProps = {
@@ -6,12 +7,20 @@ export type TripCardProps = {
   author: {
     name: string;
   };
-  destination: string;
   public: boolean;
 };
 
-const TripCard = () => {
-  return <div></div>;
+const TripCard = ({ id, title, author }) => {
+  return (
+    <Link href={`/trip/${id}/summary`}>
+      <a>
+        <div className='bg-yellow-200 py-4 px-2 m-2 rounded-lg shadow-md max-w-sm w-60'>
+          <h5>{title}</h5>
+          <h6>by {author.name}</h6>
+        </div>
+      </a>
+    </Link>
+  );
 };
 
 export default TripCard;

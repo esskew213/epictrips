@@ -3,11 +3,14 @@ import { GetServerSideProps } from 'next';
 import prisma from '../../../lib/prisma';
 import Router, { useRouter } from 'next/router';
 import { getSession } from '@auth0/nextjs-auth0';
+import { useUser } from '@auth0/nextjs-auth0';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
+import Loader from '../../../components/Loader';
+
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const id = parseInt(context.params.id);
   const { req, res } = context;
-  const { user } = getSession(req, res);
+  //   const { user } = getSession(req, res);
   // retrieve the trip
   const trip = await prisma.trip.findUnique({
     where: { id: id },
@@ -68,6 +71,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 //*********************************//
 const Summary = ({ trip, dateStr, dailyPlans }) => {
   const router = useRouter();
+  const { user, error, isLoading } = useUser();
+  if (isLoading)
+    return (
+      <div className='w-max-screen h-max-screen flex items-center justify-center'>
+        <Loader />
+      </div>
+    );
+  if (error) return <div>{error.message}</div>;
   // runs when user is done with entire page
   const handlePublish = async (evt) => {
     evt.preventDefault();
@@ -81,10 +92,14 @@ const Summary = ({ trip, dateStr, dailyPlans }) => {
       console.error(err);
     }
   };
+  const handleSave = () => {
+    router.push('/');
+  };
   return (
     <div>
       <h1 className='text-3xl'>Trip Summary: {trip.title || 'Your Trip'}</h1>
-      <h2>{dateStr || null}</h2>
+      <h2>{`by ${user.name}` || null}</h2>
+      <h4>{dateStr || null}</h4>
       {dailyPlans &&
         dailyPlans.map((plan, idx) => {
           return (
@@ -97,6 +112,9 @@ const Summary = ({ trip, dateStr, dailyPlans }) => {
       <div>
         <button className='bg-orange-400' onClick={(e) => handlePublish(e)}>
           Publish
+        </button>
+        <button className='bg-blue-400' onClick={(e) => handleSave()}>
+          Save Draft
         </button>
       </div>
     </div>
