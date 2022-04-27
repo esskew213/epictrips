@@ -65,6 +65,14 @@ const TripDetails = () => {
     });
   };
 
+  const handleEditTrip = async () => {
+    try {
+      await handleSave();
+      router.push(`/trip/${trip.id}/edit`);
+    } catch (err) {
+      console.error(err);
+    }
+  };
   // adds a new day when button is clicked
   const handleAddDay = async (evt, dailyPlanId) => {
     evt.preventDefault();
@@ -145,6 +153,12 @@ const TripDetails = () => {
           onClick={(e) => handlePageSubmit(e)}
         >
           SAVE ITINERARY
+        </button>
+        <button
+          className='bg-orange-400 font-rubik'
+          onClick={() => handleEditTrip()}
+        >
+          EDIT TRIP DETAILS
         </button>
       </div>
     </div>

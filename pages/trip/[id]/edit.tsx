@@ -1,25 +1,77 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
-import Router from 'next/router';
-import TableDatePicker from '../../components/TableDatePicker';
+import { useRouter } from 'next/router';
+import TableDatePicker from '../../../components/TableDatePicker';
 import { useUser } from '@auth0/nextjs-auth0';
-import Loader from '../../components/Loader';
+import Loader from '../../../components/Loader';
+import { getSession } from '@auth0/nextjs-auth0';
+import prisma from '../../../lib/prisma';
+export const getServerSideProps = withPageAuthRequired({
+  getServerSideProps: async (context) => {
+    const id = parseInt(context.params.id);
+    const { req, res } = context;
+    const { user } = getSession(req, res);
+    // retrieve the trip
+    try {
+      const trip = await prisma.trip.findUnique({
+        where: {
+          id: parseInt(id),
+        },
+        include: {
+          author: {
+            select: { name: true },
+          },
+          tags: {
+            select: { tag: true },
+          },
+        },
+      });
+      // check if authorised
+      if (!trip || trip.authorId !== user.sub) {
+        return {
+          redirect: {
+            permanent: false,
+            destination: '/',
+          },
+        };
+      }
 
-const Trip = () => {
-  const [title, setTitle] = useState('');
-  const [budget, setBudget] = useState('BUDGET');
-  const [startDate, setStartDate] = useState(new Date());
-  const [tags, setTags] = useState({
-    HIKING: false,
-    SOLO: false,
-    ROADTRIP: false,
-    ROMANTIC: false,
-    FAMILY: false,
-    THRILLSEEKING: false,
-    CHILL: false,
-  });
+      const allTags = {
+        HIKING: false,
+        SOLO: false,
+        ROADTRIP: false,
+        ROMANTIC: false,
+        FAMILY: false,
+        THRILLSEEKING: false,
+        CHILL: false,
+      };
+      for (let el of trip.tags) {
+        allTags[el['tag']] = true;
+      }
+      return {
+        props: {
+          trip: JSON.parse(JSON.stringify(trip)),
+          allTags,
+        },
+      };
+    } catch (err) {
+      console.error(err);
+    }
+  },
+});
+
+//*******************************
+const Trip = ({ trip, allTags }) => {
+  const [title, setTitle] = useState(trip?.title || null);
+  const [budget, setBudget] = useState(trip?.budget || null);
+  const [startDate, setStartDate] = useState(
+    new Date(trip?.startDate) || new Date()
+  );
+  const [tags, setTags] = useState(allTags);
+  console.log(trip.tags);
+  console.log(tags);
+  const router = useRouter();
   const { user, error, isLoading } = useUser();
-
   if (isLoading) return <Loader />;
   if (error) return <div>{error.message}</div>;
 
@@ -40,14 +92,12 @@ const Trip = () => {
     e.preventDefault();
     const body = { title, startDate, tags, budget };
     try {
-      const res = await fetch('/api/trip', {
-        method: 'POST',
+      const res = await fetch(`/api/trip/${trip.id}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
-      setTitle('');
-      const data = await res.json();
-      await Router.push(`/trip/${data.id}`);
+      await router.push(`/trip/${trip.id}`);
     } catch (err) {
       console.error(err);
     }
@@ -161,7 +211,7 @@ const Trip = () => {
         </fieldset>
         <div>
           <button className='px-2 py-1 rounded-md bg-yellow-400 transition ease-in-out duration-150 hover:shadow-md hover:-translate-y-1 hover:bg-orange-400'>
-            Create
+            Update
           </button>
         </div>
       </form>

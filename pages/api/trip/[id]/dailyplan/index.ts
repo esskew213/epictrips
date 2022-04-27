@@ -53,6 +53,14 @@ export default withApiAuthRequired(async function createDailyPlan(req, res) {
 
     const trip = await prisma.trip.findUnique({
       where: { id: parseInt(id) },
+      include: {
+        author: {
+          select: { name: true },
+        },
+        tags: {
+          select: { tag: true },
+        },
+      },
     });
 
     if (trip.authorId !== user.sub) {

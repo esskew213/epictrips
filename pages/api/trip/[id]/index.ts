@@ -4,21 +4,78 @@ import prisma from '../../../../lib/prisma';
 // API to fetch existing trip given id
 export default withApiAuthRequired(async function createTrip(req, res) {
   const { id } = req.query;
+  const { method } = req;
   const { user } = getSession(req, res);
-  try {
-    const trip = await prisma.trip.findUnique({
-      where: {
-        id: parseInt(id),
-      },
-    });
+  if (method === 'GET') {
+    try {
+      const trip = await prisma.trip.findUnique({
+        where: {
+          id: parseInt(id),
+        },
+        include: {
+          author: {
+            select: { name: true },
+          },
+          tags: {
+            select: { tag: true },
+          },
+        },
+      });
 
-    // check if authorised
-    if (trip.authorId !== user.sub) {
-      res.status(401);
+      // check if authorised
+      if (trip.authorId !== user.sub) {
+        res.status(401);
+      }
+      console.log(trip);
+      res.json(trip);
+    } catch (err) {
+      console.error(err);
     }
-    console.log(trip);
-    res.json(trip);
-  } catch (err) {
-    console.error(err);
+  }
+
+  if (method === 'PUT') {
+    const { title, startDate, budget, tags } = req.body;
+    try {
+      const trip = await prisma.trip.findUnique({
+        where: {
+          id: parseInt(id),
+        },
+      });
+
+      if (trip.authorId !== user.sub) {
+        res.status(401);
+      }
+
+      const updatedTrip = await prisma.trip.update({
+        where: {
+          id: parseInt(id),
+        },
+        data: {
+          title: title,
+          startDate: startDate,
+          budget: budget,
+        },
+      });
+
+      await prisma.tripTag.deleteMany({
+        where: {
+          tripId: parseInt(id),
+        },
+      });
+
+      for (let [key, value] of Object.entries(tags)) {
+        if (value) {
+          await prisma.tripTag.create({
+            data: {
+              tripId: updatedTrip.id,
+              tag: key,
+            },
+          });
+        }
+      }
+      res.json('UPDATED');
+    } catch (err) {
+      console.error(err);
+    }
   }
 });
