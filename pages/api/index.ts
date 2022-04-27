@@ -2,7 +2,7 @@ import { withApiAuthRequired, getSession } from '@auth0/nextjs-auth0';
 import prisma from '../../lib/prisma';
 
 // API to create new trip
-export default withApiAuthRequired(async function searchTrips(req, res) {
+export default async function searchTrips(req, res) {
   const { user } = getSession(req, res);
 
   if (req.method === 'POST') {
@@ -52,4 +52,4 @@ export default withApiAuthRequired(async function searchTrips(req, res) {
       res.status(500);
     }
   }
-});
+}

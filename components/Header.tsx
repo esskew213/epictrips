@@ -6,7 +6,7 @@ const Header = () => {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>{error.message}</div>;
   return (
-    <nav className='w-screen bg-cyan-700 px-2 py-4 text-white'>
+    <nav className='w-screen font-rubik tracking-wide bg-cyan-700 px-2 py-4 text-white'>
       {user && (
         <span className='inline-block'>
           <img

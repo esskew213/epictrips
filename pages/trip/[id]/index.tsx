@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Loader from '../../../components/Loader';
+import DailyPlanForm from '../../../components/DailyPlanForm';
+
 //*********************************//
 //*********** COMPONENT ***********//
 //*********************************//
@@ -114,37 +116,34 @@ const TripDetails = () => {
   };
   if (pageLoad) return <Loader />;
   return (
-    <div>
-      <h1 className='text-3xl'>Add details to {trip?.title || 'your trip'}</h1>
-      <h2>{date || null}</h2>
-      {dailyPlans &&
-        dailyPlans.map((plan, idx) => {
-          return (
-            <div className='bg-slate-200 p-6' key={plan.id}>
-              <h4>
-                Day {idx + 1}: {calcDate(trip, idx + 1)}
-              </h4>
-
-              <form>
-                <input
-                  type='textarea'
-                  value={notes[plan.id] || ''}
-                  onChange={(e) => {
-                    handleNotesChange(e, plan.id);
-                  }}
-                />
-                <button
-                  disabled={requireReload}
-                  onClick={(evt) => handleAddDay(evt, plan.id)}
-                >
-                  Add day
-                </button>
-              </form>
-            </div>
-          );
-        })}
+    <div className='font-rubik'>
+      <h1 className='text-3xl font-rubik'>
+        Add details to {trip?.title || 'your trip'}
+      </h1>
+      <h2 className=''>{date || null}</h2>
+      <div className='grid grid-cols-1 gap-y-4'>
+        {dailyPlans &&
+          dailyPlans.map((plan, idx) => {
+            return (
+              <DailyPlanForm
+                key={idx}
+                idx={idx}
+                calcDate={calcDate}
+                trip={trip}
+                notes={notes}
+                plan={plan}
+                requireReload={requireReload}
+                handleAddDay={handleAddDay}
+                handleNotesChange={handleNotesChange}
+              />
+            );
+          })}
+      </div>
       <div>
-        <button className='bg-orange-400' onClick={(e) => handlePageSubmit(e)}>
+        <button
+          className='bg-orange-400 font-rubik'
+          onClick={(e) => handlePageSubmit(e)}
+        >
           SAVE ITINERARY
         </button>
       </div>

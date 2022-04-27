@@ -96,8 +96,8 @@ const Profile: React.FC<Props> = ({ trips, isAuthor, author }) => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <main className='w-screen'>
-        <div className='container w-max mx-auto'>
-          <h1 className='text-4xl py-4 text-slate-700'>{author?.name}</h1>
+        <div className='container w-5/6 mx-auto'>
+          <h1 className='text-4xl w-max py-4 text-slate-700'>{author?.name}</h1>
           <div>
             {editing ? (
               <div>
