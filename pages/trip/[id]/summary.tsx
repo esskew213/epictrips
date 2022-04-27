@@ -15,6 +15,13 @@ export const getServerSideProps = withPageAuthRequired({
     // retrieve the trip
     const trip = await prisma.trip.findUnique({
       where: { id: id },
+      include: {
+        likes: {
+          where: {
+            userId: user.sub,
+          },
+        },
+      },
     });
     // if trip is not found, redirect user to home
     if (!trip) {
@@ -104,6 +111,8 @@ const Summary = ({
   authorName,
   authorId,
 }) => {
+  console.log('rerendering');
+  const [liked, setLiked] = useState(false);
   const { user, error, isLoading } = useUser();
   const router = useRouter();
   const { public: published } = trip;
@@ -135,6 +144,22 @@ const Summary = ({
   const handleSave = () => {
     router.push(`/${user.sub}`);
   };
+  const toggleLike = async () => {
+    const likedId = trip.likes[0]?.id || 0;
+    const body = { tripId: trip.id, likedId: likedId, liked: !liked };
+    console.log(body);
+    try {
+      const res = await fetch(`/api/trip/${trip.id}/like`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      setLiked((prevState) => !prevState);
+      router.replace(router.asPath);
+    } catch (err) {
+      console.error(err);
+    }
+  };
   const calcDate = ({ startDate }, increment) => {
     const parsedDate = new Date(startDate);
     const calculatedDate = new Date(
@@ -151,8 +176,40 @@ const Summary = ({
 
   return (
     <div>
-      <h1 className='text-3xl'>Trip Summary: {trip.title || 'Your Trip'}</h1>
-
+      <div>
+        <h1 className='text-3xl'>Trip Summary: {trip.title || 'Your Trip'}</h1>
+        <button onClick={toggleLike}>
+          {liked ? (
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              className='h-5 w-5'
+              viewBox='0 0 20 20'
+              fill='currentColor'
+            >
+              <path
+                fillRule='evenodd'
+                d='M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z'
+                clipRule='evenodd'
+              />
+            </svg>
+          ) : (
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              className='h-6 w-6'
+              fill='none'
+              viewBox='0 0 24 24'
+              stroke='currentColor'
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'
+              />
+            </svg>
+          )}
+        </button>
+      </div>
       <h2>
         by{' '}
         <Link href={`/${authorId}`}>
