@@ -16,8 +16,12 @@ export const getServerSideProps: GetServerSideProps = async () => {
         select: { name: true },
       },
       tags: true,
+      likes: {
+        where: { liked: true },
+      },
     },
   });
+
   // need to do JSON parse / stringify as next cannot serialize datetime objects
   return { props: { trips: JSON.parse(JSON.stringify(trips)) } };
 };
@@ -84,6 +88,7 @@ const Home: React.FC<Props> = (props) => {
                 title={trip.title}
                 tags={trip.tags}
                 budget={trip.budget}
+                likes={trip.likes.length}
               />
             ))}
           </div>

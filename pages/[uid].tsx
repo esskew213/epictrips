@@ -31,6 +31,9 @@ export const getServerSideProps = withPageAuthRequired({
           select: { name: true },
         },
         tags: true,
+        likes: {
+          where: { liked: true },
+        },
       },
     });
     // need to do JSON parse / stringify as next cannot serialize datetime objects
@@ -147,8 +150,9 @@ const Profile: React.FC<Props> = ({ trips, isAuthor, author }) => {
                 id={trip.id}
                 author={trip.author}
                 title={trip.title}
-                tags={trip.tags}
+                tags={trip?.tags}
                 budget={trip.budget}
+                likes={trip.likes.length}
               />
             ))}
           </div>
@@ -174,6 +178,7 @@ const Profile: React.FC<Props> = ({ trips, isAuthor, author }) => {
                     title={trip.title}
                     tags={trip.tags}
                     budget={trip.budget}
+                    likes={trip.likes.length}
                   />
                 ))}
               </div>

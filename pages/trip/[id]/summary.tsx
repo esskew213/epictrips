@@ -23,6 +23,7 @@ export const getServerSideProps = withPageAuthRequired({
         },
       },
     });
+    console.log(trip.likes);
     // if trip is not found, redirect user to home
     if (!trip) {
       return {
@@ -61,7 +62,12 @@ export const getServerSideProps = withPageAuthRequired({
         trip: true, // Return all fields
       },
     });
-
+    // const liked = await prisma.tripLike.findUnique({
+    //   where: {
+    //    userId: user.sub,
+    //     tripId: tr
+    //   }
+    // })
     // Get predecessor id to daily plan mapping
     const predecessorIdToPlanMap = dailyPlans.reduce(function (map, plan) {
       map[plan.predecessorId] = plan;
@@ -112,7 +118,7 @@ const Summary = ({
   authorId,
 }) => {
   console.log('rerendering');
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(trip?.likes[0]?.liked || false);
   const { user, error, isLoading } = useUser();
   const router = useRouter();
   const { public: published } = trip;

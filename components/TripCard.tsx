@@ -10,9 +10,10 @@ export type TripCardProps = {
   public: boolean;
   budget: string;
   tags: string[];
+  likes: [liked: boolean];
 };
 
-const TripCard = ({ id, title, author, tags, budget }) => {
+const TripCard = ({ id, title, author, tags, budget, likes }) => {
   const sortedTags = tags.sort((a, b) => {
     if (a.tag < b.tag) {
       return -1;
@@ -39,6 +40,23 @@ const TripCard = ({ id, title, author, tags, budget }) => {
           <div className='px-2 mt-2'>
             <p className='text-lg tracking-wider font-light '>{title}</p>
             <p className='text-xs font-semibold'>by {author.name}</p>
+            {likes > 0 ? (
+              <p className='text-sm font-semibold'>
+                <span>{likes}</span>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  className='h-4 w-4 ml-0.5 inline-block -translate-y-0.5'
+                  viewBox='0 0 20 20'
+                  fill='currentColor'
+                >
+                  <path
+                    fillRule='evenodd'
+                    d='M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z'
+                    clipRule='evenodd'
+                  />
+                </svg>
+              </p>
+            ) : null}
             {budget && (
               <p className='absolute bottom-2 bg-sky-500 text-white rounded-full px-2 tracking-widest text-md right-2 font-semibold normalcase'>
                 {budget === 'BUDGET'
