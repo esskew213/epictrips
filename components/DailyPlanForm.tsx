@@ -14,7 +14,7 @@ const DailyPlanForm = ({
     <div className='bg-slate-200 flex-wrap p-6 w-full mx-auto drop-shadow-md flex flex-col items-start'>
       <div className='w-full flex justify-between mb-2'>
         <h4 className='inline-block'>
-          Day {idx + 1}: {calcDate(trip, idx + 1)}
+          Day {idx + 1}: {calcDate(trip, idx)}
         </h4>
         <button
           disabled={disableButtons}

@@ -41,7 +41,7 @@ const TripCard = ({ id, title, author, tags, budget, likes }) => {
             <p className='text-lg tracking-wider font-light '>{title}</p>
             <p className='text-xs font-semibold'>by {author.name}</p>
             {likes > 0 ? (
-              <p className='text-sm font-semibold'>
+              <p className='absolute bottom-2 left-2 bg-red-400 rounded-full text-white  px-2 text-md font-semibold'>
                 <span>{likes}</span>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
@@ -58,7 +58,7 @@ const TripCard = ({ id, title, author, tags, budget, likes }) => {
               </p>
             ) : null}
             {budget && (
-              <p className='absolute bottom-2 bg-sky-500 text-white rounded-full px-2 tracking-widest text-md right-2 font-semibold normalcase'>
+              <p className='absolute bottom-2 bg-cyan-500 text-white rounded-full px-2 tracking-widest text-md right-2 font-semibold'>
                 {budget === 'BUDGET'
                   ? '$'
                   : budget === 'MODERATE'

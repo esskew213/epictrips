@@ -24,7 +24,7 @@ export default withApiAuthRequired(async function createTrip(req, res) {
 
       // check if authorised
       if (trip.authorId !== user.sub) {
-        res.status(401);
+        res.status(401).end('Not authorised');
       }
       console.log(trip);
       res.json(trip);
@@ -43,7 +43,7 @@ export default withApiAuthRequired(async function createTrip(req, res) {
       });
 
       if (trip.authorId !== user.sub) {
-        res.status(401);
+        res.status(401).end('Not authorised');
       }
 
       const updatedTrip = await prisma.trip.update({

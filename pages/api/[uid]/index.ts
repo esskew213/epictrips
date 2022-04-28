@@ -22,7 +22,7 @@ export default withApiAuthRequired(async function createTrip(req, res) {
         res.json('bio updated');
       }
 
-      res.status(401);
+      res.status(401).end('Not authorised');
     } catch (err) {
       console.error(err);
     }

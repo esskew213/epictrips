@@ -157,7 +157,7 @@ const Profile: React.FC<Props> = ({ trips, isAuthor, author }) => {
               Published Trips
             </h2>
           </div>
-          <div className='grid place-content-between xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-x-12 gap-y-0 mb-8'>
+          <div className='grid w-full place-content-between grid-cols-1 sm:grid-cols-2 md:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4 gap-x-12 gap-y-0 mb-8'>
             {publicTrips.length > 0 ? (
               publicTrips.map((trip) => (
                 <TripCard
@@ -167,7 +167,7 @@ const Profile: React.FC<Props> = ({ trips, isAuthor, author }) => {
                   title={trip.title}
                   tags={trip?.tags}
                   budget={trip.budget}
-                  likes={trip.likes.length}
+                  likes={trip.likes?.length}
                 />
               ))
             ) : (
@@ -205,7 +205,7 @@ const Profile: React.FC<Props> = ({ trips, isAuthor, author }) => {
                   </Link>
                 </button>
               </div>
-              <div className='grid place-content-between xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-x-12 gap-y-0 mb-8'>
+              <div className='grid w-full place-content-between grid-cols-1 sm:grid-cols-2 md:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4 gap-x-12 gap-y-0 mb-8'>
                 {privateTrips.length > 0 ? (
                   privateTrips.map((trip) => (
                     <TripCard
@@ -215,7 +215,7 @@ const Profile: React.FC<Props> = ({ trips, isAuthor, author }) => {
                       title={trip.title}
                       tags={trip.tags}
                       budget={trip.budget}
-                      likes={trip.likes.length}
+                      likes={trip.likes?.length}
                     />
                   ))
                 ) : (

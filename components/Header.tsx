@@ -6,7 +6,7 @@ const Header = () => {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>{error.message}</div>;
   return (
-    <nav className='w-screen tracking-wide bg-cyan-500 text-sm md:text-md font-semibold px-4 py-2 text-white flex flex-row items-center justify-between'>
+    <nav className='w-screen border-b border-b-cyan-900 tracking-wide bg-gradient-to-b from-cyan-600 to-cyan-800 bg-cyan-500 text-sm md:text-md font-semibold px-4 py-2 text-white flex flex-row items-center justify-between'>
       {user && (
         <span>
           <span className='inline-block mr-4'>

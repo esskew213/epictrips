@@ -183,75 +183,95 @@ const Summary = ({
   return (
     <div>
       <HeadComponent title={'Trip Summary'} />
-      <div>
-        <h1 className='text-3xl'>Trip Summary: {trip.title || 'Your Trip'}</h1>
-        <button onClick={toggleLike}>
-          {liked ? (
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              className='h-5 w-5'
-              viewBox='0 0 20 20'
-              fill='currentColor'
-            >
-              <path
-                fillRule='evenodd'
-                d='M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z'
-                clipRule='evenodd'
-              />
-            </svg>
-          ) : (
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              className='h-6 w-6'
-              fill='none'
-              viewBox='0 0 24 24'
-              stroke='currentColor'
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'
-              />
-            </svg>
-          )}
-        </button>
-      </div>
-      <h2>
-        by{' '}
-        <Link href={`/${authorId}`}>
-          <a>{authorName}</a>
-        </Link>
-      </h2>
+      <main className='w-screen'>
+        <div className='container w-5/6 mx-auto relative'>
+          <div className=' flex justify-start items-baseline'>
+            <h1 className=' inline-block text-xl sm:text-2xl lg:text-3xl w-max mt-8 mb-4 font-serif mr-4'>
+              {trip?.title || 'Your Trip'}
+            </h1>
+            <button className='inline-block' onClick={toggleLike}>
+              {liked ? (
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  className='h-5 w-5 md:h-6 md:w-6 text-red-400'
+                  viewBox='0 0 20 20'
+                  fill='currentColor'
+                >
+                  <path
+                    fillRule='evenodd'
+                    d='M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z'
+                    clipRule='evenodd'
+                  />
+                </svg>
+              ) : (
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  className='h-5 w-5 md:h-6 md:w-6 text-red-400'
+                  fill='none'
+                  viewBox='0 0 22 22'
+                  stroke='currentColor'
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'
+                  />
+                </svg>
+              )}
+            </button>
+          </div>
+          <h2 className='mb-8'>
+            by{' '}
+            <Link href={`/${authorId}`}>
+              <a className='text-cyan-500 font-semibold hover:underline'>
+                {authorName}
+              </a>
+            </Link>
+            <br />
+            {dateStr || null}
+          </h2>
 
-      <h4>{dateStr || null}</h4>
-      {dailyPlans &&
-        dailyPlans.map((plan, idx) => {
-          return (
-            <div className='bg-slate-200 p-6' key={plan.id}>
-              <h4>
-                Day {idx + 1}: {calcDate(trip, idx + 1)}
-              </h4>
-              <p className='whitespace-pre-line'>{plan.notes}</p>
+          <div className='grid grid-cols-1 gap-y-4'>
+            {dailyPlans &&
+              dailyPlans.map((plan, idx) => {
+                return (
+                  <div
+                    className='bg-slate-200 flex-wrap p-6 w-full mx-auto drop-shadow-md flex flex-col items-start'
+                    key={plan.id}
+                  >
+                    <h4 className='mb-2'>
+                      Day {idx + 1}: {calcDate(trip, idx)}
+                    </h4>
+                    <p className='whitespace-pre-line'>{plan.notes}</p>
+                  </div>
+                );
+              })}
+          </div>
+          {isAuthor && (
+            <div className='fixed drop-shadow-md bottom-5 right-5 grid grid-cols-1 gap-y-1'>
+              <button
+                className='bg-cyan-500 block w-full rounded-md text-sm py-1'
+                onClick={(e) => router.push(`/trip/${trip.id}`)}
+              >
+                Edit trip
+              </button>
+              <button
+                className='bg-yellow-400 block w-full rounded-md text-sm py-1'
+                onClick={(e) => handleSave()}
+              >
+                Save to drafts
+              </button>
+              <button
+                className='bg-red-400 block w-full rounded-md text-sm py-1'
+                onClick={(e) => togglePublish(e)}
+              >
+                {published ? 'Make private' : 'Publish'}
+              </button>
             </div>
-          );
-        })}
-      {isAuthor && (
-        <div>
-          <button
-            className='bg-blue-400'
-            onClick={(e) => router.push(`/trip/${trip.id}`)}
-          >
-            Edit trip
-          </button>
-          <button className='bg-blue-400' onClick={(e) => handleSave()}>
-            Save to drafts
-          </button>
-          <button className='bg-orange-400' onClick={(e) => togglePublish(e)}>
-            {published ? 'Make private' : 'Publish'}
-          </button>
+          )}
         </div>
-      )}
+      </main>
     </div>
   );
 };
