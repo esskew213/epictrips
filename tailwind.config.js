@@ -1,3 +1,5 @@
+const defaultTheme = require('tailwindcss/defaultTheme');
+
 module.exports = {
   mode: 'jit',
   content: [
@@ -7,8 +9,16 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
+        sans: ['Nunito', ...defaultTheme.fontFamily.sans],
+        serif: ['Merriweather', ...defaultTheme.fontFamily.serif],
         rubik: ['Rubik', 'sans-serif'],
-        merriweather: ['Merriweather', 'serif'],
+      },
+      backgroundImage: {
+        'search-photo': "url('/images/searchphoto.jpg')",
+      },
+      screens: {
+        xs: '375px',
+        ...defaultTheme.screens,
       },
     },
   },

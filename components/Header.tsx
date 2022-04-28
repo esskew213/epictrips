@@ -6,31 +6,46 @@ const Header = () => {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>{error.message}</div>;
   return (
-    <nav className='w-screen font-rubik tracking-wide bg-cyan-700 px-2 py-4 text-white'>
+    <nav className='w-screen tracking-wide bg-cyan-500 text-sm md:text-md font-semibold px-4 py-2 text-white flex flex-row items-center justify-between'>
       {user && (
-        <span className='inline-block'>
-          <img
-            className='w-10 h-10 rounded-full inline'
-            src={user.picture}
-            alt={user.name}
-          />
-          <span>{user.name}</span>
-          <Link href='/'>
-            <a className='p-3'>Search</a>
-          </Link>
-          <Link href={`/${user.sub}`}>
-            <a className='p-3'>My Dashboard</a>
-          </Link>
+        <span>
+          <span className='inline-block mr-4'>
+            <Link href={`/${user.sub}`}>
+              <a>
+                <img
+                  className='w-10 h-10 rounded-full inline-block'
+                  src={user?.picture}
+                  alt={user?.name}
+                />
+                <span className='mx-3 sm:inline-block hidden'>
+                  Welcome,{' '}
+                  <span className='underline'>{user?.name || 'user'}</span>
+                </span>
+              </a>
+            </Link>
+          </span>
+          <span>
+            <Link href={`/${user.sub}`}>
+              <a className='mr-4 xs:inline-block hidden'>My Dashboard</a>
+            </Link>
+            <Link href='/'>
+              <a className='ml-4'>Trip Search</a>
+            </Link>
+          </span>
         </span>
       )}
       {user ? (
-        <a className='p-3' href='/api/auth/logout'>
-          Logout
-        </a>
+        <span className=''>
+          <a className='' href='/api/auth/logout'>
+            Logout
+          </a>
+        </span>
       ) : (
-        <a className='p-3' href='/api/auth/login'>
-          Login
-        </a>
+        <span className='justify-self-end'>
+          <a className='' href='/api/auth/login'>
+            Login
+          </a>
+        </span>
       )}
     </nav>
   );

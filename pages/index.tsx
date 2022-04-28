@@ -65,10 +65,13 @@ const Home: React.FC<Props> = (props) => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <main className='w-screen'>
-        <div className='flex py-6 w-full mx-auto justify-center bg-slate-400'>
-          <form onSubmit={handleSubmit} className='w-full flex justify-center'>
+        <div className='flex py-6 w-full h-60 mx-auto justify-center items-center	bg-cover bg-center bg-no-repeat bg-search-photo'>
+          <form
+            onSubmit={handleSubmit}
+            className='w-full flex justify-center mx-auto'
+          >
             <input
-              className='rounded-full mx-auto w-4/6 border-none focus:drop-shadow-md'
+              className='rounded-full mx-auto w-5/6 h-12 border-none focus:ring-2 focus:ring-cyan-500 drop-shadow-lg'
               type='text'
               value={searchStr}
               onChange={handleChange}

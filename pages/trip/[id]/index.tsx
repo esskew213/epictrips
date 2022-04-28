@@ -124,7 +124,7 @@ const TripDetails = () => {
   };
   if (pageLoad) return <Loader />;
   return (
-    <div className='font-rubik'>
+    <div>
       <h1 className='text-3xl font-rubik'>
         Add details to {trip?.title || 'your trip'}
       </h1>
@@ -148,16 +148,10 @@ const TripDetails = () => {
           })}
       </div>
       <div>
-        <button
-          className='bg-orange-400 font-rubik'
-          onClick={(e) => handlePageSubmit(e)}
-        >
+        <button className='bg-red-400' onClick={(e) => handlePageSubmit(e)}>
           SAVE ITINERARY
         </button>
-        <button
-          className='bg-orange-400 font-rubik'
-          onClick={() => handleEditTrip()}
-        >
+        <button className='bg-red-400' onClick={() => handleEditTrip()}>
           EDIT TRIP DETAILS
         </button>
       </div>
