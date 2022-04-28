@@ -8,104 +8,97 @@ import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Loader from '../../../components/Loader';
 import Link from 'next/link';
 import HeadComponent from '../../../components/Head';
-export const getServerSideProps = withPageAuthRequired({
-  getServerSideProps: async (context) => {
-    const id = parseInt(context.params.id);
-    const { req, res } = context;
-    const { user } = getSession(req, res);
-    // retrieve the trip
-    const trip = await prisma.trip.findUnique({
-      where: { id: id },
-      include: {
-        likes: {
-          where: {
-            userId: user.sub,
-          },
-        },
+export const getServerSideProps = async (context) => {
+  const id = parseInt(context.params.id);
+  const { req, res } = context;
+  const session = getSession(req, res);
+  let isAuthor = false;
+  let likedByUser = false;
+  console.log('SESSION', session);
+  const trip = await prisma.trip.findUnique({
+    where: { id: id },
+    include: {
+      _count: { select: { likes: true } },
+      author: {
+        select: { name: true },
       },
-    });
-    console.log(trip.likes);
-    // if trip is not found, redirect user to home
-    if (!trip) {
-      return {
-        redirect: {
-          permanent: false,
-          destination: '/',
-        },
-      };
-    }
-    // if (user.sub !== trip.authorId) {
-    //   return {
-    //     redirect: {
-    //       permanent: false,
-    //       destination: '/',
-    //     },
-    //   };
-    // }
-
-    const author = await prisma.user.findUnique({
-      where: { id: trip.authorId },
-    });
-    const isAuthor = Boolean(user.sub === trip.authorId);
-
-    const options = {
-      weekday: 'short',
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    };
-    const dateStr = trip.startDate.toLocaleDateString(undefined, options);
-
-    // retrieve daily plans associated with that trip
-    const dailyPlans = await prisma.dailyPlan.findMany({
-      where: { tripId: id },
-      include: {
-        trip: true, // Return all fields
-      },
-    });
-    // const liked = await prisma.tripLike.findUnique({
-    //   where: {
-    //    userId: user.sub,
-    //     tripId: tr
-    //   }
-    // })
-    // Get predecessor id to daily plan mapping
-    const predecessorIdToPlanMap = dailyPlans.reduce(function (map, plan) {
-      map[plan.predecessorId] = plan;
-      return map;
-    }, {});
-
-    // Find day 1
-    let firstPlan = null;
-    for (let plan of dailyPlans) {
-      if (plan.predecessorId === null) {
-        firstPlan = plan;
-      }
-    }
-
-    // Traverse the daily plans from day 1 to last day
-    const sortedPlans = [];
-    let currentPlan = firstPlan;
-    while (true) {
-      sortedPlans.push(currentPlan);
-      currentPlan = predecessorIdToPlanMap[currentPlan.id];
-      if (!currentPlan) {
-        break;
-      }
-    }
-
+    },
+  });
+  console.log(trip);
+  if (!trip) {
     return {
-      props: {
-        trip: JSON.parse(JSON.stringify(trip)),
-        dateStr,
-        dailyPlans: JSON.parse(JSON.stringify(sortedPlans)),
-        isAuthor,
-        authorName: author.name,
-        authorId: author.id,
+      redirect: {
+        permanent: false,
+        destination: '/',
       },
     };
-  },
-});
+  }
+
+  if (session) {
+    const like = await prisma.tripLike.findUnique({
+      where: { userId: session.user.sub },
+    });
+    console.log('liked?', like);
+    if (like) {
+      likedByUser = true;
+    }
+    isAuthor = Boolean(session.user.sub === trip.authorId);
+  }
+
+  // const author = await prisma.user.findUnique({
+  //   where: { id: trip.authorId },
+  // });
+
+  const options = {
+    weekday: 'short',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  };
+  const dateStr = trip.startDate.toLocaleDateString(undefined, options);
+
+  // retrieve daily plans associated with that trip
+  const dailyPlans = await prisma.dailyPlan.findMany({
+    where: { tripId: id },
+    include: {
+      trip: true, // Return all fields
+    },
+  });
+
+  // Get predecessor id to daily plan mapping
+  const predecessorIdToPlanMap = dailyPlans.reduce(function (map, plan) {
+    map[plan.predecessorId] = plan;
+    return map;
+  }, {});
+  // Find day 1
+  let firstPlan = null;
+  for (let plan of dailyPlans) {
+    if (plan.predecessorId === null) {
+      firstPlan = plan;
+    }
+  }
+  // Traverse the daily plans from day 1 to last day
+  const sortedPlans = [];
+  let currentPlan = firstPlan;
+  while (true) {
+    sortedPlans.push(currentPlan);
+    currentPlan = predecessorIdToPlanMap[currentPlan.id];
+    if (!currentPlan) {
+      break;
+    }
+  }
+
+  return {
+    props: {
+      trip: JSON.parse(JSON.stringify(trip)),
+      dateStr,
+      dailyPlans: JSON.parse(JSON.stringify(sortedPlans)),
+      isAuthor,
+      authorName: trip.author.name,
+      likedByUser,
+    },
+  };
+};
 
 //*********************************//
 //*********** COMPONENT ***********//
@@ -117,8 +110,9 @@ const Summary = ({
   isAuthor,
   authorName,
   authorId,
+  likedByUser,
 }) => {
-  const [liked, setLiked] = useState(trip?.likes[0]?.liked || false);
+  const [liked, setLiked] = useState(likedByUser);
   const { user, error, isLoading } = useUser();
   const router = useRouter();
   const { public: published } = trip;
@@ -151,19 +145,29 @@ const Summary = ({
     router.push(`/${user.sub}`);
   };
   const toggleLike = async () => {
-    const likedId = trip.likes[0]?.id || 0;
-    const body = { tripId: trip.id, likedId: likedId, liked: !liked };
-    console.log(body);
-    try {
-      const res = await fetch(`/api/trip/${trip.id}/like`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
-      setLiked((prevState) => !prevState);
-      router.replace(router.asPath);
-    } catch (err) {
-      console.error(err);
+    // if liked, unlike by deleting entry in DB
+    if (liked) {
+      try {
+        const res = await fetch(`/api/trip/${trip.id}/like`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+        });
+        setLiked((prevState) => !prevState);
+        router.replace(router.asPath);
+      } catch (err) {
+        console.error(err);
+      }
+    } else {
+      try {
+        const res = await fetch(`/api/trip/${trip.id}/like`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+        });
+        setLiked((prevState) => !prevState);
+        router.replace(router.asPath);
+      } catch (err) {
+        console.error(err);
+      }
     }
   };
   const calcDate = ({ startDate }, increment) => {
@@ -190,7 +194,7 @@ const Summary = ({
               {trip?.title || 'Your Trip'}
             </h1>
             <button className='inline-block' onClick={toggleLike}>
-              {liked ? (
+              {!user ? null : liked ? (
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   className='h-5 w-5 md:h-6 md:w-6 text-red-400'

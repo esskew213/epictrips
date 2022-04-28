@@ -3,26 +3,32 @@ import prisma from '../../../../lib/prisma';
 
 export default withApiAuthRequired(async function createTrip(req, res) {
   const { id } = req.query;
-  console.log(req.body);
-  const { method, body } = req;
+  const { method } = req;
   const { user } = getSession(req, res);
-  console.log(body);
-  if (method === 'PUT') {
+
+  if (method === 'POST') {
     try {
-      await prisma.tripLike.upsert({
-        where: {
-          id: body.likedId,
-        },
-        update: {
-          liked: body.liked,
-        },
-        create: {
+      await prisma.tripLike.create({
+        data: {
           userId: user.sub,
           tripId: parseInt(id),
-          liked: body.liked,
         },
       });
       res.json('like upserted');
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  if (method === 'DELETE') {
+    try {
+      await prisma.tripLike.delete({
+        where: {
+          userId: user.sub,
+          tripId: parseInt(id),
+        },
+      });
+      res.json('like deleted');
     } catch (err) {
       console.error(err);
     }
