@@ -18,9 +18,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
         select: { name: true },
       },
       tags: true,
-      likes: {
-        where: { liked: true },
-      },
+      _count: { select: { likes: true } },
     },
   });
 
@@ -136,7 +134,7 @@ const Home: React.FC<Props> = (props) => {
                 title={trip.title}
                 tags={trip.tags}
                 budget={trip.budget}
-                likes={trip.likes?.length}
+                likes={trip._count.likes}
               />
             ))}
           </div>

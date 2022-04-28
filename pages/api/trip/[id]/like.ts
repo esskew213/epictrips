@@ -22,7 +22,7 @@ export default withApiAuthRequired(async function createTrip(req, res) {
 
   if (method === 'DELETE') {
     try {
-      await prisma.tripLike.delete({
+      await prisma.tripLike.deleteMany({
         where: {
           userId: user.sub,
           tripId: parseInt(id),

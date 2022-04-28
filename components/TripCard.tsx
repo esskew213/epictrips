@@ -10,7 +10,7 @@ export type TripCardProps = {
   public: boolean;
   budget: string;
   tags: string[];
-  likes: [liked: boolean];
+  likes: number;
 };
 
 const TripCard = ({ id, title, author, tags, budget, likes }) => {

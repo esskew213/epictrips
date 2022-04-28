@@ -14,7 +14,6 @@ export const getServerSideProps = async (context) => {
   const session = getSession(req, res);
   let isAuthor = false;
   let likedByUser = false;
-  console.log('SESSION', session);
   const trip = await prisma.trip.findUnique({
     where: { id: id },
     include: {
@@ -35,11 +34,11 @@ export const getServerSideProps = async (context) => {
   }
 
   if (session) {
-    const like = await prisma.tripLike.findUnique({
-      where: { userId: session.user.sub },
+    const like = await prisma.tripLike.findMany({
+      where: { userId: session.user.sub, tripId: trip.id },
     });
     console.log('liked?', like);
-    if (like) {
+    if (like.length > 0) {
       likedByUser = true;
     }
     isAuthor = Boolean(session.user.sub === trip.authorId);
@@ -87,7 +86,7 @@ export const getServerSideProps = async (context) => {
       break;
     }
   }
-
+  console.log('liked by user?', likedByUser);
   return {
     props: {
       trip: JSON.parse(JSON.stringify(trip)),
