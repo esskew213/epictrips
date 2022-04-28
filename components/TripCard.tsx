@@ -25,9 +25,9 @@ const TripCard = ({ id, title, author, tags, budget, likes }) => {
   });
 
   return (
-    <Link href={`/trip/${id}/summary`}>
-      <a>
-        <div className='overflow-hidden bg-yellow-400 my-4 rounded-lg drop-shadow-md h-72 w-60 relative hover:-translate-y-2 hover:drop-shadow-lg hover:ring-2 hover:ring-cyan-400/20 transition ease-in-out duration-200'>
+    <div className='mx-auto overflow-hidden bg-yellow-400 my-4 rounded-lg drop-shadow-md h-72 w-60 relative hover:-translate-y-2 hover:drop-shadow-lg hover:ring-2 hover:ring-cyan-400/20 transition ease-in-out duration-200'>
+      <Link href={`/trip/${id}/summary`}>
+        <a>
           <Image
             src='/images/beach1.jpg'
             alt='beach'
@@ -80,9 +80,9 @@ const TripCard = ({ id, title, author, tags, budget, likes }) => {
                 </span>
               ))}
           </p>
-        </div>
-      </a>
-    </Link>
+        </a>
+      </Link>
+    </div>
   );
 };
 

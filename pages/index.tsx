@@ -84,8 +84,8 @@ const Home: React.FC<Props> = (props) => {
           </form>
         </div>
 
-        <div className='container w-max sm:w-5/6 mx-auto'>
-          <div className='grid place-content-between xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-x-12 gap-y-0'>
+        <div className='w-full sm:w-5/6 mx-auto'>
+          <div className='grid w-full place-content-between grid-cols-1 sm:grid-cols-2 md:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4 gap-x-12 gap-y-0'>
             {results.map((trip) => (
               <TripCard
                 key={trip.id}

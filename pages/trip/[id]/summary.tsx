@@ -231,7 +231,7 @@ const Summary = ({
               <h4>
                 Day {idx + 1}: {calcDate(trip, idx + 1)}
               </h4>
-              <p>{plan.notes}</p>
+              <p className='whitespace-pre-line'>{plan.notes}</p>
             </div>
           );
         })}
@@ -241,13 +241,13 @@ const Summary = ({
             className='bg-blue-400'
             onClick={(e) => router.push(`/trip/${trip.id}`)}
           >
-            Edit
+            Edit trip
           </button>
           <button className='bg-blue-400' onClick={(e) => handleSave()}>
-            Save Draft
+            Save to drafts
           </button>
           <button className='bg-orange-400' onClick={(e) => togglePublish(e)}>
-            {published ? 'Make Private' : 'Publish'}
+            {published ? 'Make private' : 'Publish'}
           </button>
         </div>
       )}

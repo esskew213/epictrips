@@ -6,7 +6,7 @@ const DailyPlanForm = ({
   trip,
   notes,
   plan,
-  requireReload,
+  disableButtons,
   handleAddDay,
   handleNotesChange,
 }) => {
@@ -17,7 +17,7 @@ const DailyPlanForm = ({
           Day {idx + 1}: {calcDate(trip, idx + 1)}
         </h4>
         <button
-          disabled={requireReload}
+          disabled={disableButtons}
           onClick={(evt) => handleAddDay(evt, plan.id)}
           className='inline-block text-sm disabled:opacity-50 bg-cyan-500 block px-1 py-1 rounded-md transition ease-in-out duration-200 hover:shadow-md active:text-white active:bg-cyan-700 hover:-translate-y-0.5 active:translate-y-0'
         >

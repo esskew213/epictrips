@@ -17,6 +17,7 @@ const TripDetails = () => {
   const [dailyPlans, setDailyPlans] = useState([]);
   const [trip, setTrip] = useState({});
   const [date, setDate] = useState('');
+  const [disableButtons, setDisableButtons] = useState(false);
   const [requireReload, setRequireReload] = useState(false);
   useEffect(() => {
     const getDailyPlans = async () => {
@@ -58,11 +59,13 @@ const TripDetails = () => {
 
   // to save notes
   const handleSave = async () => {
+    setDisableButtons(true);
     const res = await fetch(`/api/trip/${trip.id}/dailyplan/update`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(notes),
     });
+    setDisableButtons(false);
   };
 
   const handleEditTrip = async () => {
@@ -140,7 +143,7 @@ const TripDetails = () => {
                 trip={trip}
                 notes={notes}
                 plan={plan}
-                requireReload={requireReload}
+                disableButtons={disableButtons}
                 handleAddDay={handleAddDay}
                 handleNotesChange={handleNotesChange}
               />
@@ -148,11 +151,26 @@ const TripDetails = () => {
           })}
       </div>
       <div>
-        <button className='bg-red-400' onClick={(e) => handlePageSubmit(e)}>
-          SAVE ITINERARY
+        <button
+          disabled={disableButtons}
+          className='bg-red-400'
+          onClick={() => handleSave()}
+        >
+          Save
         </button>
-        <button className='bg-red-400' onClick={() => handleEditTrip()}>
-          EDIT TRIP DETAILS
+        <button
+          disabled={disableButtons}
+          className='bg-red-400'
+          onClick={(e) => handlePageSubmit(e)}
+        >
+          Save and Preview
+        </button>
+        <button
+          disabled={disableButtons}
+          className='bg-red-400'
+          onClick={() => handleEditTrip()}
+        >
+          Edit trip detials
         </button>
       </div>
     </div>
