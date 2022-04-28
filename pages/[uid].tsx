@@ -34,6 +34,9 @@ export const getServerSideProps = withPageAuthRequired({
         tags: true,
         _count: { select: { likes: true } },
       },
+      orderBy: {
+        updatedAt: 'desc',
+      },
     });
     // need to do JSON parse / stringify as next cannot serialize datetime objects
     return {

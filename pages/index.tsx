@@ -20,6 +20,12 @@ export const getServerSideProps: GetServerSideProps = async () => {
       tags: true,
       _count: { select: { likes: true } },
     },
+    orderBy: {
+      likes: {
+        _count: 'desc',
+      },
+      updatedAt: 'desc',
+    },
   });
 
   // need to do JSON parse / stringify as next cannot serialize datetime objects
