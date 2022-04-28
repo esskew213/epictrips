@@ -4,6 +4,7 @@ import Router from 'next/router';
 import TableDatePicker from '../../components/TableDatePicker';
 import { useUser } from '@auth0/nextjs-auth0';
 import Loader from '../../components/Loader';
+import HeadComponent from '../../components/Head';
 
 const Trip = () => {
   const [title, setTitle] = useState('');
@@ -54,6 +55,7 @@ const Trip = () => {
   };
   return (
     <>
+      <HeadComponent title={'Create Trip'} />
       <div>
         <h2 className='text-2xl py-4 mb-4'>Create new trip</h2>
       </div>

@@ -8,6 +8,7 @@ import { useUser } from '@auth0/nextjs-auth0';
 import prisma from '../lib/prisma';
 import { TripCardProps } from '../components/TripCard';
 import { useRouter } from 'next/router';
+import HeadComponent from '../components/Head';
 export const getServerSideProps: GetServerSideProps = async () => {
   const trips = await prisma.trip.findMany({
     where: { public: true },
@@ -36,7 +37,11 @@ const Home: React.FC<Props> = (props) => {
   const [results, setResults] = useState(props.trips);
   const [searchStr, setSearchStr] = useState('');
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchStr(e.target.value);
+    if (searchStr.length === 0 && e.target.value === ' ') {
+      setSearchStr('');
+    } else {
+      setSearchStr(e.target.value);
+    }
   };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -59,11 +64,7 @@ const Home: React.FC<Props> = (props) => {
   if (error) return <div>{error.message}</div>;
   return (
     <div className=''>
-      <Head>
-        <title>Epic Trips</title>
-        <meta name='description' content='Inspiration for your next getaway' />
-        <link rel='icon' href='/favicon.ico' />
-      </Head>
+      <HeadComponent title={'Search'} />
       <main className='w-screen '>
         <div className='flex flex-col py-6 w-full h-60 mx-auto justify-center items-center	bg-cover bg-center bg-no-repeat bg-search-photo'>
           <p className='font-serif font-black text-white text-2xl lg:text-4xl mb-6 drop-shadow-lg'>
@@ -74,6 +75,7 @@ const Home: React.FC<Props> = (props) => {
             className='w-full flex justify-center mx-auto'
           >
             <input
+              pattern="^[a-zA-Z\d\']*"
               className='rounded-full mx-auto w-5/6 h-12 border-none focus:ring-2 focus:ring-cyan-500 drop-shadow-lg'
               type='text'
               value={searchStr}
@@ -94,7 +96,7 @@ const Home: React.FC<Props> = (props) => {
                 title={trip.title}
                 tags={trip.tags}
                 budget={trip.budget}
-                likes={trip.likes.length}
+                likes={trip.likes?.length}
               />
             ))}
           </div>

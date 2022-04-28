@@ -6,6 +6,7 @@ import { useUser } from '@auth0/nextjs-auth0';
 import Loader from '../../../components/Loader';
 import { getSession } from '@auth0/nextjs-auth0';
 import prisma from '../../../lib/prisma';
+import HeadComponent from '../../../components/Head';
 export const getServerSideProps = withPageAuthRequired({
   getServerSideProps: async (context) => {
     const id = parseInt(context.params.id);
@@ -104,6 +105,7 @@ const Trip = ({ trip, allTags }) => {
   };
   return (
     <>
+      <HeadComponent title={'Edit Trip'} />
       <div>
         <h2 className='text-2xl py-4 mb-4'>Create new trip</h2>
       </div>

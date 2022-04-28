@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Loader from '../../../components/Loader';
 import DailyPlanForm from '../../../components/DailyPlanForm';
-
+import HeadComponent from '../../../components/Head';
 //*********************************//
 //*********** COMPONENT ***********//
 //*********************************//
@@ -128,6 +128,7 @@ const TripDetails = () => {
   if (pageLoad) return <Loader />;
   return (
     <div>
+      <HeadComponent title={'Add Details'} />
       <h1 className='text-3xl font-rubik'>
         Add details to {trip?.title || 'your trip'}
       </h1>

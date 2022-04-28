@@ -7,13 +7,14 @@ export default async function searchTrips(req, res) {
 
   if (req.method === 'POST') {
     const { body } = req;
+    const searchStr = body.split(' ').join(' | ');
     console.log('searching for', body);
     try {
       const titleMatches = await prisma.trip.findMany({
         where: {
           public: true,
           title: {
-            search: body,
+            search: searchStr,
           },
         },
         include: {
@@ -29,7 +30,7 @@ export default async function searchTrips(req, res) {
           dailyPlan: {
             some: {
               notes: {
-                search: body,
+                search: searchStr,
               },
             },
           },

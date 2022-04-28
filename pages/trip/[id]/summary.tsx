@@ -7,6 +7,7 @@ import { useUser } from '@auth0/nextjs-auth0';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Loader from '../../../components/Loader';
 import Link from 'next/link';
+import HeadComponent from '../../../components/Head';
 export const getServerSideProps = withPageAuthRequired({
   getServerSideProps: async (context) => {
     const id = parseInt(context.params.id);
@@ -117,7 +118,6 @@ const Summary = ({
   authorName,
   authorId,
 }) => {
-  console.log('rerendering');
   const [liked, setLiked] = useState(trip?.likes[0]?.liked || false);
   const { user, error, isLoading } = useUser();
   const router = useRouter();
@@ -182,6 +182,7 @@ const Summary = ({
 
   return (
     <div>
+      <HeadComponent title={'Trip Summary'} />
       <div>
         <h1 className='text-3xl'>Trip Summary: {trip.title || 'Your Trip'}</h1>
         <button onClick={toggleLike}>

@@ -10,6 +10,7 @@ import prisma from '../lib/prisma';
 import { TripCardProps } from '../components/TripCard';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import HeadComponent from '../components/Head';
 
 export const getServerSideProps = withPageAuthRequired({
   getServerSideProps: async (context) => {
@@ -93,11 +94,7 @@ const Profile: React.FC<Props> = ({ trips, isAuthor, author }) => {
   };
   return (
     <div>
-      <Head>
-        <title>EpicTrips | My Trips</title>
-        <meta name='description' content='Inspiration for your next getaway' />
-        <link rel='icon' href='/favicon.ico' />
-      </Head>
+      <HeadComponent title={'Dashboard'} />
       <main className='w-screen'>
         <div className='container w-5/6 mx-auto'>
           <h1 className='text-3xl sm:text-4xl lg:text-5xl w-max mt-8 mb-4 font-serif'>
