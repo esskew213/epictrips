@@ -64,8 +64,11 @@ const Home: React.FC<Props> = (props) => {
         <meta name='description' content='Inspiration for your next getaway' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <main className='w-screen'>
-        <div className='flex py-6 w-full h-60 mx-auto justify-center items-center	bg-cover bg-center bg-no-repeat bg-search-photo'>
+      <main className='w-screen '>
+        <div className='flex flex-col py-6 w-full h-60 mx-auto justify-center items-center	bg-cover bg-center bg-no-repeat bg-search-photo'>
+          <p className='font-serif font-black text-white text-2xl lg:text-4xl mb-6 drop-shadow-lg'>
+            It's going to be <span className='text-yellow-400'>epic</span>.
+          </p>
           <form
             onSubmit={handleSubmit}
             className='w-full flex justify-center mx-auto'
@@ -81,7 +84,7 @@ const Home: React.FC<Props> = (props) => {
           </form>
         </div>
 
-        <div className='container w-max mx-auto'>
+        <div className='container w-max sm:w-5/6 mx-auto'>
           <div className='grid place-content-between xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-x-12 gap-y-0'>
             {results.map((trip) => (
               <TripCard

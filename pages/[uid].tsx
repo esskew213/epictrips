@@ -94,55 +94,72 @@ const Profile: React.FC<Props> = ({ trips, isAuthor, author }) => {
   return (
     <div>
       <Head>
-        <title>Epic Trip | My Trips</title>
+        <title>EpicTrips | My Trips</title>
         <meta name='description' content='Inspiration for your next getaway' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <main className='w-screen'>
         <div className='container w-5/6 mx-auto'>
-          <h1 className='text-4xl w-max py-4 text-slate-700'>{author?.name}</h1>
-          <div>
-            {editing ? (
-              <div>
-                <form onSubmit={handleSubmit}>
-                  <input
-                    onChange={handleChange}
-                    value={bio}
-                    type='text'
-                  ></input>
-                  <button className='text-sm text-cyan-500 xs:block sm:inline-block px-1 py-1 rounded-md border border-cyan-500 transition ease-in-out duration-150 hover:shadow-md hover:-translate-y-1 hover:text-white hover:bg-teal-700'>
-                    Save Bio
+          <h1 className='text-3xl sm:text-4xl lg:text-5xl w-max mt-8 mb-4 font-serif'>
+            {author?.name}
+          </h1>
+          {isAuthor ? (
+            <div className='mb-12'>
+              {editing ? (
+                <div className='flex w-full'>
+                  <form
+                    id='bio'
+                    onSubmit={handleSubmit}
+                    className='w-full sm:flex  sm:justify-between'
+                  >
+                    <textarea
+                      form='bio'
+                      onChange={handleChange}
+                      value={bio}
+                      className='block w-full h-36 sm:h-20 sm:w-5/6 mb-4 sm:mb-0 lg:w-11/12 sm:inline-block rounded-xl border border-slate-400'
+                    />
+                    <button className='text-sm text-cyan-500 w-full self-center h-fit sm:w-24 block xs:inline-block px-1 py-1 rounded-md border border-cyan-500 transition ease-in-out duration-250 hover:shadow-md hover:text-white  group  hover:bg-cyan-500'>
+                      Save Bio
+                    </button>
+                  </form>
+                </div>
+              ) : (
+                <div className='w-full sm:flex sm:justify-between'>
+                  <div className='block w-full mb-4 sm:mb-0 sm:w-5/6 lg:w-11/12 sm:inline-block'>
+                    {author?.bio || 'Bio'}
+                  </div>
+                  <button
+                    onClick={toggleEditing}
+                    className='text-sm text-cyan-500 w-full self-center h-fit sm:w-24 block xs:inline-block px-1 py-1 rounded-md border border-cyan-500 transition ease-in-out duration-250 hover:shadow-md hover:text-white  group  hover:bg-cyan-500'
+                  >
+                    Edit Bio
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      className='h-5 w-5 text-cyan-500 inline-block ml-2 -translate-y-0.5 group-hover:text-white transition ease-in-out duration-250'
+                      viewBox='0 0 20 20'
+                      fill='currentColor'
+                    >
+                      <path d='M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z' />
+                      <path
+                        fillRule='evenodd'
+                        d='M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z'
+                        clipRule='evenodd'
+                      />
+                    </svg>
                   </button>
-                </form>
-              </div>
-            ) : (
-              <div>{author?.bio || 'Bio'}</div>
-            )}
-            {editing ? null : (
-              <button
-                onClick={toggleEditing}
-                className='text-sm text-cyan-500  xs:block sm:inline-block px-1 py-1 rounded-md border border-cyan-500 transition ease-in-out duration-150 hover:shadow-md hover:-translate-y-1 hover:text-white hover:bg-cyan-500'
-              >
-                Edit Bio
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  className='h-5 w-5 text-cyan-500 inline-block ml-2 -translate-y-0.5'
-                  viewBox='0 0 20 20'
-                  fill='currentColor'
-                >
-                  <path d='M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z' />
-                  <path
-                    fillRule='evenodd'
-                    d='M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z'
-                    clipRule='evenodd'
-                  />
-                </svg>
-              </button>
-            )}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className='block mb-12 w-full sm:inline-block'>
+              {author?.bio || 'Bio'}
+            </div>
+          )}
+          <div className='border-b border-b-slate-200 h-8'>
+            <h2 className='text-xl uppercase tracking-wider mr-4 font-semibold'>
+              Published Trips
+            </h2>
           </div>
-          <h2 className='text-xl uppercase tracking-wider mr-4 border-b border-b-slate-200'>
-            Published Trips
-          </h2>
           <div className='grid place-content-between xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-x-12 gap-y-0 mb-8'>
             {publicTrips.map((trip) => (
               <TripCard
@@ -159,13 +176,29 @@ const Profile: React.FC<Props> = ({ trips, isAuthor, author }) => {
 
           {isAuthor && (
             <>
-              <div className='border-b border-b-slate-200'>
-                <h2 className='xs:block sm:inline-block text-xl uppercase tracking-wider mr-4 '>
+              <div className='border-b border-b-slate-200 h-12 flex justify-between items-center mb-4'>
+                <h2 className='inline-block text-xl uppercase tracking-wider mr-4 font-semibold'>
                   My Drafts
                 </h2>
-                <button className=' xs:block sm:inline-block px-2 py-0 rounded-md bg-cyan-500 transition ease-in-out duration-150 hover:shadow-md hover:-translate-y-1 hover:text-white hover:bg-teal-700'>
+                <button className='group text-sm inline-block w-max px-2 py-1 h-fit rounded-md bg-yellow-400 transition ease-in-out duration-250 hover:shadow-md hover:text-white hover:bg-yellow-600'>
                   <Link href='/trip'>
-                    <a>Add Trip</a>
+                    <a className=''>
+                      Add Trip
+                      <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        className='h-6 w-6 ml-2 group-hover:text-white inline-block transition ease-in-out duration-250'
+                        fill='none'
+                        viewBox='0 0 24 24'
+                        stroke='currentColor'
+                        strokeWidth={2}
+                      >
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          d='M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z'
+                        />
+                      </svg>
+                    </a>
                   </Link>
                 </button>
               </div>
