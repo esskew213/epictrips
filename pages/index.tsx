@@ -1,6 +1,5 @@
 import Head from 'next/head';
 import React, { useState, useEffect } from 'react';
-
 import Loader from '../components/Loader';
 import TripCard from '../components/TripCard';
 import { GetServerSideProps } from 'next';
@@ -20,12 +19,16 @@ export const getServerSideProps: GetServerSideProps = async () => {
       tags: true,
       _count: { select: { likes: true } },
     },
-    orderBy: {
-      likes: {
-        _count: 'desc',
+    orderBy: [
+      {
+        likes: {
+          _count: 'desc',
+        },
       },
-      updatedAt: 'desc',
-    },
+      {
+        updatedAt: 'desc',
+      },
+    ],
   });
 
   // need to do JSON parse / stringify as next cannot serialize datetime objects

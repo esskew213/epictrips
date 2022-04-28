@@ -8,7 +8,7 @@ import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Loader from '../../../components/Loader';
 import Link from 'next/link';
 import HeadComponent from '../../../components/Head';
-export const getServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const id = parseInt(context.params.id);
   const { req, res } = context;
   const session = getSession(req, res);
@@ -260,17 +260,18 @@ const Summary = ({
               >
                 Edit trip
               </button>
-              <button
-                className='bg-yellow-400 block w-full rounded-md text-sm py-1'
-                onClick={(e) => handleSave()}
-              >
-                Save to drafts
-              </button>
+
               <button
                 className='bg-red-400 block w-full rounded-md text-sm py-1'
                 onClick={(e) => togglePublish(e)}
               >
                 {published ? 'Make private' : 'Publish'}
+              </button>
+              <button
+                className='bg-yellow-400 block w-full rounded-md text-sm py-1'
+                onClick={(e) => handleSave()}
+              >
+                Back to dashboard
               </button>
             </div>
           )}

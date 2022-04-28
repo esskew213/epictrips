@@ -12,42 +12,49 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import HeadComponent from '../components/Head';
 
-export const getServerSideProps = withPageAuthRequired({
-  getServerSideProps: async (context) => {
-    const { req, res } = context;
-    const userId = context.params.uid;
-    const { user } = getSession(req, res);
-    const isAuthor: Boolean = user.sub === userId;
-    console.log('isAuthor?', isAuthor);
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { req, res } = context;
+  const authorId = context.params.uid;
+  let isAuthor = false;
+  const session = getSession(req, res);
+  if (session) {
+    isAuthor = Boolean(session.user.sub === authorId);
+  }
 
-    const author = await prisma.user.findUnique({
-      where: { id: userId },
-    });
-    console.log(author);
-    // find the trips this author has published
-    const trips = await prisma.trip.findMany({
-      where: { authorId: userId },
-      include: {
-        author: {
-          select: { name: true },
-        },
-        tags: true,
-        _count: { select: { likes: true } },
-      },
-      orderBy: {
-        updatedAt: 'desc',
-      },
-    });
-    // need to do JSON parse / stringify as next cannot serialize datetime objects
+  const author = await prisma.user.findUnique({
+    where: { id: authorId },
+  });
+  if (!author) {
     return {
-      props: {
-        trips: JSON.parse(JSON.stringify(trips)),
-        isAuthor: isAuthor,
-        author: { name: author.name, bio: author.bio },
+      redirect: {
+        permanent: false,
+        destination: '/',
       },
     };
-  },
-});
+  }
+  // find the public trips this author has published
+  const trips = await prisma.trip.findMany({
+    where: { authorId: authorId },
+    include: {
+      author: {
+        select: { name: true },
+      },
+      tags: true,
+      _count: { select: { likes: true } },
+    },
+    orderBy: {
+      updatedAt: 'desc',
+    },
+  });
+  // need to do JSON parse / stringify as next cannot serialize datetime objects
+  return {
+    props: {
+      trips: JSON.parse(JSON.stringify(trips)),
+      isAuthor: isAuthor,
+      author: { name: author.name, bio: author.bio },
+    },
+  };
+};
 
 type Props = {
   trips: TripCardProps[];
