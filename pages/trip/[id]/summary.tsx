@@ -94,6 +94,7 @@ export const getServerSideProps = async (context) => {
       dailyPlans: JSON.parse(JSON.stringify(sortedPlans)),
       isAuthor,
       authorName: trip.author.name,
+      authorId: trip.authorId,
       likedByUser,
     },
   };
@@ -141,7 +142,7 @@ const Summary = ({
     }
   };
   const handleSave = () => {
-    router.push(`/${user.sub}`);
+    router.push(`/${authorId}`);
   };
   const toggleLike = async () => {
     // if liked, unlike by deleting entry in DB
