@@ -129,6 +129,29 @@ const TripDetails = () => {
     setRequireReload(true);
   };
 
+  const handleDeleteDay = async (evt, dailyPlanId) => {
+    evt.preventDefault();
+    // first save all notes
+    try {
+      await handleSave();
+    } catch (err) {
+      console.error(err);
+    }
+
+    // then add a new day
+    const body = { toDeleteId: dailyPlanId };
+    try {
+      const res = await fetch(`/api/trip/${trip.id}/dailyplan`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+    } catch (err) {
+      console.error(err);
+    }
+    setRequireReload(true);
+  };
+
   // function to dynamically calculate dates of trip
   const calcDate = ({ startDate }, increment) => {
     const parsedDate = new Date(startDate);
@@ -156,6 +179,7 @@ const TripDetails = () => {
   };
 
   if (pageLoad) return <Loader />;
+  console.log(dailyPlans.length);
   return (
     <div>
       <HeadComponent title={'Add Details'} />
@@ -201,19 +225,12 @@ const TripDetails = () => {
                     disableButtons={disableButtons}
                     handleAddDay={handleAddDay}
                     handleNotesChange={handleNotesChange}
+                    handleDeleteDay={handleDeleteDay}
+                    isOnlyDay={idx === 0 && dailyPlans.length === 1}
                   />
                 );
               })}
           </div>
-          {/* <div className='fixed drop-shadow-md bottom-5 right-5 grid grid-cols-1 gap-y-1 w-40'>
-            <button
-              disabled={disableButtons}
-              className='bg-red-400 block w-full rounded-md text-sm font-semibold py-1 h-fit mb-2 px-2 hover:bg-red-700 hover:text-white hover:drop-shadow-md transition ease-in-out duration-250'
-              onClick={() => handleSave()}
-            >
-              Save
-            </button>
-          </div> */}
         </div>
       </main>
     </div>

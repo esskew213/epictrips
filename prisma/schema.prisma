@@ -44,7 +44,7 @@ model Trip {
 model DailyPlan {
    id     Int      @id @default(autoincrement())
   predecessorId Int?
-  successor   DailyPlan?   @relation("DailyPlanList")
+  successor   DailyPlan?  @relation("DailyPlanList")
   predecessor DailyPlan?   @relation("DailyPlanList" , fields: [predecessorId], references: [id])
    notes String?
    tripId Int

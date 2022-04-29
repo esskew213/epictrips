@@ -7,6 +7,60 @@ export default withApiAuthRequired(async function createDailyPlan(req, res) {
   const { method } = req;
   const { user } = getSession(req, res);
 
+  if (method === 'DELETE') {
+    const { id } = req.query;
+
+    const { toDeleteId } = req.body;
+
+    try {
+      const dayToDelete = await prisma.dailyPlan.findUnique({
+        where: {
+          id: parseInt(toDeleteId),
+        },
+      });
+      console.log('dayToDelete', dayToDelete);
+
+      const newCurrentDay = await prisma.dailyPlan.findUnique({
+        where: {
+          predecessorId: parseInt(toDeleteId),
+        },
+      });
+
+      // check if prev day exists
+      let currentPrevDay = null;
+      if (dayToDelete.predecessorId) {
+        currentPrevDay = await prisma.dailyPlan.findUnique({
+          where: {
+            id: dayToDelete.predecessorId,
+          },
+        });
+        console.log('currentPrevDay', currentPrevDay);
+      }
+
+      const deleteOld = await prisma.dailyPlan.delete({
+        where: {
+          id: parseInt(toDeleteId),
+        },
+      });
+
+      if (newCurrentDay && currentPrevDay) {
+        const updateNew = await prisma.dailyPlan.update({
+          where: {
+            id: newCurrentDay.id,
+          },
+          data: {
+            predecessorId: currentPrevDay.id,
+          },
+        });
+        // await prisma.$transaction([updateNew, deleteOld]);
+        console.log('deleted with update');
+      }
+      res.json('deleted');
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   if (method === 'POST') {
     const { id } = req.query;
     console.log(typeof id);
@@ -70,13 +124,8 @@ export default withApiAuthRequired(async function createDailyPlan(req, res) {
       if (!trip) {
         console.log('no trip found');
         res.status(404).end();
-        return {
-          redirect: {
-            permanent: false,
-            destination: '/',
-          },
-        };
       }
+
       if (trip.authorId !== user.sub) {
         res.status(401).end('Not authorised');
       }
