@@ -179,7 +179,6 @@ const TripDetails = () => {
   };
 
   if (pageLoad) return <Loader />;
-  console.log(dailyPlans.length);
   return (
     <div>
       <HeadComponent title={'Add Details'} />

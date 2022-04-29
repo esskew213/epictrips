@@ -114,7 +114,7 @@ const Home: React.FC<Props> = (props) => {
         <div className='relative flex flex-col py-6 w-full h-60 mx-auto justify-center items-center	bg-cover bg-center bg-no-repeat bg-search-photo'>
           <div className='absolute w-full top-0 mx-auto bg-slate-900 h-60 opacity-40'></div>
           <p className='font-serif font-black text-white text-2xl lg:text-4xl mb-6 drop-shadow-lg'>
-            It's going to be <span className='text-yellow-400'>epic</span>.
+            It&apos;s going to be <span className='text-yellow-400'>epic</span>.
           </p>
 
           <form

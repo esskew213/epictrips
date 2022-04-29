@@ -12,7 +12,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import HeadComponent from '../components/Head';
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps = async (context) => {
   const { req, res } = context;
   const authorId = context.params.uid;
   let isAuthor = false;
@@ -56,13 +56,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-type Props = {
-  trips: TripCardProps[];
-  isAuthor: Boolean;
-  author: { name: string; bio: string };
-};
+// type Props = {
+//   trips: TripCardProps[];
+//   isAuthor: Boolean;
+//   author: { name: string; bio: string };
+// };
 
-const Profile: React.FC<Props> = ({ trips, isAuthor, author }) => {
+const Profile = ({ trips, isAuthor, author }) => {
   const router = useRouter();
   const [bio, setBio] = useState(author.bio);
   const [editing, setEditing] = useState(false);
