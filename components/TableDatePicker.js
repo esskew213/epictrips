@@ -8,7 +8,8 @@ export default function TableDatePicker({ onInputChange, date }) {
   return (
     <DatePicker
       value={date}
-      minDate={new Date()}
+      className='drop-shadow-md bg-white'
+      // minDate={new Date()}
       format='yyyy-MM-dd'
       onChange={onInputChange}
       required

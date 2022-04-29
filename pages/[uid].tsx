@@ -191,7 +191,7 @@ const Profile: React.FC<Props> = ({ trips, isAuthor, author }) => {
                 <h2 className='inline-block text-xl uppercase tracking-wider mr-4 font-semibold'>
                   My Drafts
                 </h2>
-                <button className='group text-sm inline-block w-max px-2 py-1 h-fit rounded-md bg-yellow-400 transition ease-in-out duration-250 hover:shadow-md hover:text-white hover:bg-yellow-600'>
+                <button className='group text-sm font-semibold inline-block w-max px-2 py-1 h-fit rounded-md bg-yellow-400 transition ease-in-out duration-250 hover:shadow-md hover:text-white hover:bg-yellow-600'>
                   <Link href='/trip'>
                     <a className=''>
                       Add Trip

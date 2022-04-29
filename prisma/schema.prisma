@@ -34,7 +34,7 @@ model Trip {
   likes TripLike[]
     createdAt     DateTime  @default(now()) @map(name: "created_at")
   updatedAt     DateTime  @updatedAt @map(name: "updated_at")
-  author    User?   @relation(fields: [authorId], references: [id])
+  author    User?   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   budget Budget?
   // this is the foreign key that connects user and trip tables
   authorId  String?
@@ -48,22 +48,22 @@ model DailyPlan {
   predecessor DailyPlan?   @relation("DailyPlanList" , fields: [predecessorId], references: [id])
    notes String?
    tripId Int
-   trip Trip @relation(fields: [tripId], references: [id])
+   trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
 
 }
 
 model TripTag {
      id     Int      @id @default(autoincrement())
   tripId Int
-   trip Trip @relation(fields: [tripId], references: [id])
+   trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
    tag  Tag
 
 }
 model TripLike {
      id     Int      @id @default(autoincrement())
-  likedBy User   @relation(fields: [userId], references: [id])
+  likedBy User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
-  trip  Trip @relation(fields: [tripId], references: [id])
+  trip  Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
      tripId Int
 }
 

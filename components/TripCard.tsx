@@ -32,7 +32,7 @@ const TripCard = ({ id, title, author, tags, budget, likes }) => {
             src='/images/beach1.jpg'
             alt='beach'
             width='200'
-            height='150'
+            height='140'
             layout='responsive'
             className='object-cover'
             priority
