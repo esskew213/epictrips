@@ -71,6 +71,20 @@ export default withApiAuthRequired(async function createTrip(req, res) {
         res.status(401).end('Not authorised');
       }
 
+      const tagsToUpdate = [];
+      for (let [key, value] of Object.entries(tags)) {
+        if (value) {
+          tagsToUpdate.push({
+            tag: key,
+          });
+        }
+      }
+
+      const deleteTags = await prisma.tripTag.deleteMany({
+        where: {
+          tripId: parseInt(id),
+        },
+      });
       const updatedTrip = await prisma.trip.update({
         where: {
           id: parseInt(id),
@@ -79,28 +93,14 @@ export default withApiAuthRequired(async function createTrip(req, res) {
           title: title,
           startDate: startDate,
           budget: budget,
+          tags: {
+            createMany: {
+              data: tagsToUpdate,
+            },
+          },
         },
       });
 
-      await prisma.tripTag.deleteMany({
-        where: {
-          tripId: parseInt(id),
-        },
-      });
-
-      const tagsToUpdate = [];
-      for (let [key, value] of Object.entries(tags)) {
-        if (value) {
-          tagsToUpdate.push({
-            tripId: updatedTrip.id,
-            tag: key,
-          });
-        }
-      }
-
-      await prisma.tripTag.createMany({
-        data: tagsToUpdate,
-      });
       res.json('UPDATED');
     } catch (err) {
       console.error(err);
