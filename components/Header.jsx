@@ -36,15 +36,15 @@ const Header = () => {
       )}
       {user ? (
         <span className=''>
-          <a className='' href='/api/auth/logout'>
-            Logout
-          </a>
+          <Link href='/api/auth/logout'>
+            <a>Logout</a>
+          </Link>
         </span>
       ) : (
         <span className='justify-self-end'>
-          <a className='' href='/api/auth/login'>
-            Login
-          </a>
+          <Link href='/api/auth/login'>
+            <a>Login</a>
+          </Link>
         </span>
       )}
     </nav>
