@@ -143,7 +143,7 @@ const Home: React.FC<Props> = (props) => {
                 title={trip.title}
                 tags={trip.tags}
                 budget={trip.budget}
-                likes={trip._count.likes}
+                likes={trip._count?.likes}
               />
             ))}
           </div>

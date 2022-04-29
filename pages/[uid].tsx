@@ -175,7 +175,7 @@ const Profile: React.FC<Props> = ({ trips, isAuthor, author }) => {
                   title={trip.title}
                   tags={trip?.tags}
                   budget={trip.budget}
-                  likes={trip._count.likes}
+                  likes={trip._count?.likes}
                 />
               ))
             ) : (
