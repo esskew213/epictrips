@@ -88,16 +88,19 @@ export default withApiAuthRequired(async function createTrip(req, res) {
         },
       });
 
+      const tagsToUpdate = [];
       for (let [key, value] of Object.entries(tags)) {
         if (value) {
-          await prisma.tripTag.create({
-            data: {
-              tripId: updatedTrip.id,
-              tag: key,
-            },
+          tagsToUpdate.push({
+            tripId: updatedTrip.id,
+            tag: key,
           });
         }
       }
+
+      await prisma.tripTag.createMany({
+        data: tagsToUpdate,
+      });
       res.json('UPDATED');
     } catch (err) {
       console.error(err);
