@@ -4,6 +4,7 @@ import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Loader from '../../../components/Loader';
 import DailyPlanForm from '../../../components/DailyPlanForm';
 import HeadComponent from '../../../components/Head';
+import { useDebounce } from '../../../hook/useDebounce';
 //*********************************//
 //*********** COMPONENT ***********//
 //*********************************//
@@ -17,8 +18,31 @@ const TripDetails = () => {
   const [dailyPlans, setDailyPlans] = useState([]);
   const [trip, setTrip] = useState({});
   const [date, setDate] = useState('');
+  const [lastSavedTime, setLastSavedTime] = useState(
+    new Date().toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  );
   const [disableButtons, setDisableButtons] = useState(false);
   const [requireReload, setRequireReload] = useState(false);
+  const debouncedNotes = useDebounce(notes, 3000);
+
+  useEffect(
+    () => {
+      if (debouncedNotes) {
+        handleSave();
+        setLastSavedTime(
+          new Date().toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+          })
+        );
+      }
+    },
+    [debouncedNotes] // Only call effect if debounced search term changes
+  );
+
   useEffect(() => {
     const getDailyPlans = async () => {
       try {
@@ -130,6 +154,7 @@ const TripDetails = () => {
     }
     router.push(`/trip/${trip.id}/summary`);
   };
+
   if (pageLoad) return <Loader />;
   return (
     <div>
@@ -137,20 +162,25 @@ const TripDetails = () => {
       <main className='w-screen'>
         <div className='container w-5/6 mx-auto relative'>
           <div className='w-full block sm:flex justify-between items-baseline'>
-            <h1 className='flex flex-wrap w-full text-xl sm:text-2xl lg:text-3xl mt-8 mb-4 font-serif mr-4'>
-              {trip?.title || 'your trip'}
-            </h1>
-            <span className='sm:flex'>
+            <div className='block md:flex items-baseline mt-8 mb-4 '>
+              <h1 className='text-xl shrink-0 sm:text-2xl lg:text-3xl font-serif mr-2'>
+                {trip?.title || 'your trip'}
+              </h1>
+              <span className='text-xs shrink-0 text-slate-400 italic mr-4'>
+                {disableButtons ? 'Saving...' : `Last saved ${lastSavedTime}`}
+              </span>
+            </div>
+            <span className='block md:flex'>
               <button
                 disabled={disableButtons}
-                className='bg-red-400 mr-4 font-semibold text-sm w-full h-fit xs:w-32 mb-4 block sm:inline-block px-2 rounded-md text-sm py-1 hover:bg-red-700 hover:text-white hover:drop-shadow-md transition ease-in-out duration-250'
+                className='bg-red-400 mr-2 font-semibold text-sm w-full h-fit sm:w-32 mb-4 block sm:inline-block px-2 rounded-md text-sm py-1 hover:bg-red-700 hover:text-white hover:drop-shadow-md transition ease-in-out duration-250'
                 onClick={() => handleEditTrip()}
               >
                 Edit trip details
               </button>
               <button
                 disabled={disableButtons}
-                className='bg-yellow-400 font-semibold text-sm h-full w-full xs:w-32 mb-4 block sm:inline-block px-2 rounded-md text-sm py-1 hover:bg-yellow-500 hover:text-white hover:drop-shadow-md transition ease-in-out duration-250'
+                className='bg-yellow-400 font-semibold text-sm h-full w-full sm:w-32 mb-4 block sm:inline-block px-2 rounded-md text-sm py-1 hover:bg-yellow-500 hover:text-white hover:drop-shadow-md transition ease-in-out duration-250'
                 onClick={(e) => handlePageSubmit(e)}
               >
                 Preview
