@@ -23,15 +23,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     },
   });
-  console.log(trip);
-  if (!trip || (!isAuthor && !trip.public)) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: '/',
-      },
-    };
-  }
 
   if (session) {
     const like = await prisma.tripLike.findMany({
@@ -43,7 +34,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
     isAuthor = Boolean(session.user.sub === trip.authorId);
   }
-
+  console.log('public?', trip.public);
+  console.log('authorised author?', isAuthor);
+  if (!trip || (!isAuthor && !trip.public)) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/',
+      },
+    };
+  }
   // const author = await prisma.user.findUnique({
   //   where: { id: trip.authorId },
   // });
@@ -248,8 +248,6 @@ const Summary = ({
                 {authorName}
               </a>
             </Link>
-            <br />
-            {dateStr || null}
           </h2>
 
           <div className='grid grid-cols-1 gap-y-4'>
