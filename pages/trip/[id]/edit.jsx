@@ -76,10 +76,10 @@ const Trip = ({ trip, allTags }) => {
   if (isLoading) return <Loader />;
   if (error) return <div>{error.message}</div>;
 
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTitleChange = (e) => {
     setTitle(e.target.value);
   };
-  const handleStartDateChange = (date: Date) => {
+  const handleStartDateChange = (date) => {
     setStartDate(date);
   };
   const handleBudgetChange = (e) => {
@@ -89,7 +89,7 @@ const Trip = ({ trip, allTags }) => {
     setTags({ ...tags, [e.target.value]: !tags[e.target.value] });
     console.log(tags);
   };
-  const handleSubmit = async (e: React.SyntheticEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const body = { title, startDate, tags, budget };
     try {
@@ -103,7 +103,7 @@ const Trip = ({ trip, allTags }) => {
       console.error(err);
     }
   };
-  const handleDelete = async (e: React.SyntheticEvent) => {
+  const handleDelete = async (e) => {
     e.preventDefault();
     try {
       const res = await fetch(`/api/trip/${trip.id}`, {

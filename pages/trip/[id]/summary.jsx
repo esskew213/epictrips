@@ -8,7 +8,7 @@ import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Loader from '../../../components/Loader';
 import Link from 'next/link';
 import HeadComponent from '../../../components/Head';
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps = async (context) => {
   const id = parseInt(context.params.id);
   const { req, res } = context;
   const session = getSession(req, res);
@@ -227,13 +227,13 @@ const Summary = ({
             {isAuthor && (
               <span className='sm:flex'>
                 <button
-                  className='bg-red-400 mr-4 font-semibold text-sm w-full h-fit xs:w-32 mb-4 block sm:inline-block px-2 rounded-md text-sm py-1 hover:bg-red-700 hover:text-white hover:drop-shadow-md transition ease-in-out duration-250'
+                  className='bg-red-400 mr-4 font-semibold w-full h-fit xs:w-32 mb-4 block sm:inline-block px-2 rounded-md text-sm py-1 hover:bg-red-700 hover:text-white hover:drop-shadow-md transition ease-in-out duration-250'
                   onClick={(e) => router.push(`/trip/${trip.id}`)}
                 >
                   Edit Itinerary
                 </button>
                 <button
-                  className='bg-yellow-400 font-semibold text-sm h-full w-full xs:w-32 mb-4 block sm:inline-block px-2 rounded-md text-sm py-1 hover:bg-yellow-500 hover:text-white hover:drop-shadow-md transition ease-in-out duration-250'
+                  className='bg-yellow-400 font-semibold  h-full w-full xs:w-32 mb-4 block sm:inline-block px-2 rounded-md text-sm py-1 hover:bg-yellow-500 hover:text-white hover:drop-shadow-md transition ease-in-out duration-250'
                   onClick={(e) => togglePublish(e)}
                 >
                   {published ? 'Make private' : 'Publish'}

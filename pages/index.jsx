@@ -9,7 +9,7 @@ import { TripCardProps } from '../components/TripCard';
 import { useRouter } from 'next/router';
 import HeadComponent from '../components/Head';
 import { useDebounce } from '../hook/useDebounce';
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps = async () => {
   const trips = await prisma.trip.findMany({
     where: { public: true },
     include: {
@@ -35,11 +35,11 @@ export const getServerSideProps: GetServerSideProps = async () => {
   return { props: { trips: JSON.parse(JSON.stringify(trips)) } };
 };
 
-type Props = {
-  trips: TripCardProps[];
-};
+// type Props = {
+//   trips: TripCardProps[];
+// };
 
-const Home: React.FC<Props> = (props) => {
+const Home = (props) => {
   console.log(props.trips);
   const { user, error, isLoading } = useUser();
   const router = useRouter();
@@ -48,7 +48,7 @@ const Home: React.FC<Props> = (props) => {
   const [searchStr, setSearchStr] = useState('');
   const debouncedSearchStr = useDebounce(searchStr, 600);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e) => {
     if (searchStr.length === 0 && e.target.value === ' ') {
       setSearchStr('');
     } else {
@@ -88,7 +88,7 @@ const Home: React.FC<Props> = (props) => {
     [debouncedSearchStr] // Only call effect if debounced search term changes
   );
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await fetch('/api', {
