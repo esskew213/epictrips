@@ -105,7 +105,7 @@ const Profile: React.FC<Props> = ({ trips, isAuthor, author }) => {
       <HeadComponent title={'Dashboard'} />
       <main className='w-screen'>
         <div className='container w-5/6 mx-auto'>
-          <h1 className='text-3xl sm:text-4xl lg:text-5xl w-max mt-8 mb-4 font-serif'>
+          <h1 className='text-3xl pl-2 lg:pl-4 border-l-4 lg:border-l-8 border-l-cyan-700 text-cyan-700 sm:text-4xl lg:text-5xl w-max mt-8 mb-4 font-serif'>
             {author?.name}
           </h1>
           {isAuthor ? (

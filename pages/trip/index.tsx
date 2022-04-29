@@ -97,7 +97,22 @@ const Trip = () => {
         </fieldset>
         <fieldset className='mb-4'>
           <legend>Categorise your trip!</legend>
-          <input
+          {Object.keys(tags).map((key) => {
+            return (
+              <>
+                <input
+                  onChange={handleTagsChange}
+                  type='checkbox'
+                  id={key}
+                  name='tag[]'
+                  value={key}
+                  checked={tags[key]}
+                />
+                <label htmlFor={key}>{key.toLowerCase()}</label>
+              </>
+            );
+          })}
+          {/* <input
             onChange={handleTagsChange}
             type='checkbox'
             id='hiking'
@@ -159,7 +174,7 @@ const Trip = () => {
             value='CHILL'
             checked={tags.CHILL}
           />
-          <label htmlFor='chill'>Chill</label>
+          <label htmlFor='chill'>Chill</label> */}
         </fieldset>
         <div>
           <button className='px-2 py-1 rounded-md bg-yellow-400 transition ease-in-out duration-150 hover:shadow-md hover:-translate-y-1 hover:bg-orange-400'>
