@@ -111,7 +111,7 @@ const Home = (props) => {
     <div className=''>
       <HeadComponent title={'Search'} />
       <main className='w-screen '>
-        <div className='relative flex flex-col py-6 w-full h-60 mx-auto justify-center items-center	bg-cover bg-center bg-no-repeat bg-search-photo'>
+        <div className='relative flex flex-col py-6 w-full h-60 mx-auto mb-12 justify-center items-center	bg-cover bg-center bg-no-repeat bg-search-photo'>
           <div className='absolute w-full top-0 mx-auto bg-slate-900 h-60 opacity-40'></div>
           <p className='font-serif font-black text-white text-2xl lg:text-4xl mb-6 drop-shadow-lg'>
             It&apos;s going to be <span className='text-yellow-400'>epic</span>.
@@ -133,7 +133,12 @@ const Home = (props) => {
           </form>
         </div>
 
-        <div className='w-full sm:w-5/6 mx-auto'>
+        <div className='w-5/6 mx-auto'>
+          <div className='border-b border-b-slate-200 h-8 mb-4'>
+            <h2 className='text-xl uppercase tracking-wider mr-4 font-semibold '>
+              FIND INSPIRATION
+            </h2>
+          </div>
           <div className='grid w-full place-content-between grid-cols-1 sm:grid-cols-2 md:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4 gap-x-12 gap-y-0'>
             {results.map((trip) => (
               <TripCard

@@ -6,7 +6,7 @@ const Header = () => {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>{error.message}</div>;
   return (
-    <nav className='w-screen border-b border-b-cyan-900 tracking-wide bg-gradient-to-b from-cyan-600 to-cyan-800 bg-cyan-500 text-sm md:text-md font-semibold px-4 py-2 text-white flex flex-row items-center justify-between'>
+    <nav className='w-screen h-16 border-b border-b-cyan-900 tracking-wide bg-gradient-to-b from-cyan-600 to-cyan-800 bg-cyan-500 text-sm md:text-md font-semibold px-4 py-2 text-white flex flex-row items-center justify-between'>
       {user && (
         <span>
           <span className='inline-block mr-4'>
@@ -17,16 +17,18 @@ const Header = () => {
                   src={user?.picture}
                   alt={user?.name}
                 />
-                <span className='mx-3 sm:inline-block hidden'>
+                <span className='mx-3 text-md sm:inline-block hidden'>
                   Welcome,{' '}
-                  <span className='underline'>{user?.name || 'user'}</span>
+                  <span className='font-bold'>{user?.name || 'user'}</span>
                 </span>
               </a>
             </Link>
           </span>
           <span>
             <Link href={`/${user.sub}`}>
-              <a className='mr-4 xs:inline-block hidden'>My Dashboard</a>
+              <a className='mr-4 xs:inline-block hidden text-md'>
+                My Dashboard
+              </a>
             </Link>
             <Link href='/'>
               <a className='ml-4'>Trip Search</a>
