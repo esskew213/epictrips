@@ -103,6 +103,18 @@ const Trip = ({ trip, allTags }) => {
       console.error(err);
     }
   };
+  const handleDelete = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    try {
+      const res = await fetch(`/api/trip/${trip.id}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      await router.push(`/${user.sub}`);
+    } catch (err) {
+      console.error(err);
+    }
+  };
   return (
     <>
       <HeadComponent title={'Edit Trip'} />
@@ -180,11 +192,21 @@ const Trip = ({ trip, allTags }) => {
               })}
             </div>
           </fieldset>
-
-          <button className='px-2 py-1 text-sm font-semibold w-full sm:w-fit sm:self-end rounded-md bg-yellow-400 transition ease-in-out duration-250 hover:shadow-md hover:text-white hover:bg-yellow-500'>
+        </form>
+        <div className='sm:flex sm:justify-end'>
+          <button
+            onClick={handleSubmit}
+            className='px-2 py-1 text-sm mb-4 mr-4 sm:mb-0 font-semibold w-full sm:w-fit sm:self-end rounded-md bg-yellow-400 transition ease-in-out duration-250 hover:shadow-md hover:text-white hover:bg-yellow-500'
+          >
             Update Trip
           </button>
-        </form>
+          <button
+            onClick={handleDelete}
+            className='px-2 py-1 text-sm mb-4 font-semibold sm:mb-0 w-full sm:w-fit sm:self-end rounded-md bg-red-400 transition ease-in-out duration-250 hover:shadow-md hover:text-white hover:bg-red-600'
+          >
+            Delete Trip
+          </button>
+        </div>
       </main>
     </>
   );

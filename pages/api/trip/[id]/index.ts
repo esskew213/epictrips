@@ -6,6 +6,9 @@ export default withApiAuthRequired(async function createTrip(req, res) {
   const { id } = req.query;
   const { method } = req;
   const { user } = getSession(req, res);
+  if (Boolean(!parseInt(id))) {
+    res.status(404).end();
+  }
   if (method === 'GET') {
     try {
       const trip = await prisma.trip.findUnique({

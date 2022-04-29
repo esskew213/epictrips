@@ -24,7 +24,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     },
   });
   console.log(trip);
-  if (!trip) {
+  if (!trip || (!isAuthor && !trip.public)) {
     return {
       redirect: {
         permanent: false,
@@ -116,9 +116,7 @@ const Summary = ({
   const { user, error, isLoading } = useUser();
   const router = useRouter();
   const { public: published } = trip;
-  if (!isAuthor && !published) {
-    router.push('/');
-  }
+
   if (isLoading)
     return (
       <div className='w-max-screen h-max-screen flex items-center justify-center'>

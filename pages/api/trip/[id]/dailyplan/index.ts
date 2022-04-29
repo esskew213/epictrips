@@ -50,64 +50,81 @@ export default withApiAuthRequired(async function createDailyPlan(req, res) {
 
   if (method === 'GET') {
     const { id } = req.query;
-
-    const trip = await prisma.trip.findUnique({
-      where: { id: parseInt(id) },
-      include: {
-        author: {
-          select: { name: true },
+    console.log(Boolean(parseInt(id)));
+    if (Boolean(!parseInt(id))) {
+      res.status(404).end();
+    }
+    try {
+      const trip = await prisma.trip.findUnique({
+        where: { id: parseInt(id) },
+        include: {
+          author: {
+            select: { name: true },
+          },
+          tags: {
+            select: { tag: true },
+          },
         },
-        tags: {
-          select: { tag: true },
-        },
-      },
-    });
-    console.log(trip.tags);
-    if (trip.authorId !== user.sub) {
-      res.status(401).end('Not authorised');
-    }
-    const options = {
-      weekday: 'short',
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    };
-    const dateStr = trip.startDate.toLocaleDateString(undefined, options);
-
-    // retrieve daily plans associated with that trip
-    const dailyPlans = await prisma.dailyPlan.findMany({
-      where: { tripId: parseInt(id) },
-    });
-
-    // Get predecessor id to daily plan mapping
-    const predecessorIdToPlanMap = dailyPlans.reduce(function (map, plan) {
-      map[plan.predecessorId] = plan;
-      return map;
-    }, {});
-
-    // Find day 1
-    let firstPlan = null;
-    for (let plan of dailyPlans) {
-      if (plan.predecessorId === null) {
-        firstPlan = plan;
+      });
+      console.log('TRIP', Boolean(trip));
+      if (!trip) {
+        console.log('no trip found');
+        res.status(404).end();
+        return {
+          redirect: {
+            permanent: false,
+            destination: '/',
+          },
+        };
       }
-    }
-
-    // Traverse the daily plans from day 1 to last day
-    const sortedPlans = [];
-    let currentPlan = firstPlan;
-    while (true) {
-      sortedPlans.push(currentPlan);
-      currentPlan = predecessorIdToPlanMap[currentPlan.id];
-      if (!currentPlan) {
-        break;
+      if (trip.authorId !== user.sub) {
+        res.status(401).end('Not authorised');
       }
-    }
+      const options = {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      };
+      const dateStr = trip.startDate.toLocaleDateString(undefined, options);
 
-    res.json({
-      trip: JSON.parse(JSON.stringify(trip)),
-      dateStr,
-      dailyPlans: JSON.parse(JSON.stringify(sortedPlans)),
-    });
+      // retrieve daily plans associated with that trip
+      const dailyPlans = await prisma.dailyPlan.findMany({
+        where: { tripId: parseInt(id) },
+      });
+
+      // Get predecessor id to daily plan mapping
+      const predecessorIdToPlanMap = dailyPlans.reduce(function (map, plan) {
+        map[plan.predecessorId] = plan;
+        return map;
+      }, {});
+
+      // Find day 1
+      let firstPlan = null;
+      for (let plan of dailyPlans) {
+        if (plan.predecessorId === null) {
+          firstPlan = plan;
+        }
+      }
+
+      // Traverse the daily plans from day 1 to last day
+      const sortedPlans = [];
+      let currentPlan = firstPlan;
+      while (true) {
+        sortedPlans.push(currentPlan);
+        currentPlan = predecessorIdToPlanMap[currentPlan.id];
+        if (!currentPlan) {
+          break;
+        }
+      }
+
+      res.json({
+        trip: JSON.parse(JSON.stringify(trip)),
+        dateStr,
+        dailyPlans: JSON.parse(JSON.stringify(sortedPlans)),
+      });
+    } catch (err) {
+      console.error(err);
+    }
   }
 });

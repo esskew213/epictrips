@@ -30,6 +30,11 @@ const TripDetails = () => {
           router.push('/');
           return;
         }
+        if (res.status === 404) {
+          router.push('/');
+          return;
+        }
+
         const data = await res.json();
         console.log(data);
         setDate(data.dateStr);
