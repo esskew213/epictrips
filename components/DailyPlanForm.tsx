@@ -11,15 +11,15 @@ const DailyPlanForm = ({
   handleNotesChange,
 }) => {
   return (
-    <div className='bg-slate-200 flex-wrap p-6 w-full mx-auto drop-shadow-md flex flex-col items-start'>
-      <div className='w-full flex justify-between mb-2'>
-        <h4 className='inline-block'>
+    <div className='bg-slate-100 flex-wrap p-6 w-full mx-auto flex flex-col items-start'>
+      <div className='w-full block xs:flex justify-between'>
+        <h4 className='inline-block mb-4 font-bold tracking-wide mr-4'>
           Day {idx + 1}: {calcDate(trip, idx)}
         </h4>
         <button
           disabled={disableButtons}
           onClick={(evt) => handleAddDay(evt, plan.id)}
-          className='inline-block text-sm disabled:opacity-50 bg-cyan-500 block px-1 py-1 rounded-md transition ease-in-out duration-200 hover:shadow-md active:text-white active:bg-cyan-700 hover:-translate-y-0.5 active:translate-y-0'
+          className='mb-4 font-semibold text-sm disabled:opacity-50 w-full xs:w-24 h-fit bg-cyan-500 block px-2 py-1 rounded-md transition ease-in-out duration-250 hover:shadow-md hover:text-white hover:bg-cyan-700'
         >
           Add day
         </button>

@@ -129,51 +129,58 @@ const TripDetails = () => {
   return (
     <div>
       <HeadComponent title={'Add Details'} />
-      <h1 className='text-3xl font-rubik'>
-        Add details to {trip?.title || 'your trip'}
-      </h1>
-      <h2 className=''>{date || null}</h2>
-      <div className='grid grid-cols-1 gap-y-4'>
-        {dailyPlans &&
-          dailyPlans.map((plan, idx) => {
-            return (
-              <DailyPlanForm
-                key={idx}
-                idx={idx}
-                calcDate={calcDate}
-                trip={trip}
-                notes={notes}
-                plan={plan}
-                disableButtons={disableButtons}
-                handleAddDay={handleAddDay}
-                handleNotesChange={handleNotesChange}
-              />
-            );
-          })}
-      </div>
-      <div>
-        <button
-          disabled={disableButtons}
-          className='bg-red-400'
-          onClick={() => handleSave()}
-        >
-          Save
-        </button>
-        <button
-          disabled={disableButtons}
-          className='bg-red-400'
-          onClick={(e) => handlePageSubmit(e)}
-        >
-          Save and Preview
-        </button>
-        <button
-          disabled={disableButtons}
-          className='bg-red-400'
-          onClick={() => handleEditTrip()}
-        >
-          Edit trip detials
-        </button>
-      </div>
+      <main className='w-screen'>
+        <div className='container w-5/6 mx-auto relative'>
+          <div className='w-full block sm:flex justify-between items-baseline'>
+            <h1 className='flex flex-wrap w-full text-xl sm:text-2xl lg:text-3xl mt-8 mb-4 font-serif mr-4'>
+              {trip?.title || 'your trip'}
+            </h1>
+            <span className='sm:flex'>
+              <button
+                disabled={disableButtons}
+                className='bg-red-400 mr-4 font-semibold text-sm w-full h-fit xs:w-32 mb-4 block sm:inline-block px-2 rounded-md text-sm py-1 hover:bg-red-700 hover:text-white hover:drop-shadow-md transition ease-in-out duration-250'
+                onClick={() => handleEditTrip()}
+              >
+                Edit trip details
+              </button>
+              <button
+                disabled={disableButtons}
+                className='bg-yellow-400 font-semibold text-sm h-full w-full xs:w-32 mb-4 block sm:inline-block px-2 rounded-md text-sm py-1 hover:bg-yellow-500 hover:text-white hover:drop-shadow-md transition ease-in-out duration-250'
+                onClick={(e) => handlePageSubmit(e)}
+              >
+                Preview
+              </button>
+            </span>
+          </div>
+          <div className='grid grid-cols-1 gap-y-4'>
+            {dailyPlans &&
+              dailyPlans.map((plan, idx) => {
+                return (
+                  <DailyPlanForm
+                    key={idx}
+                    idx={idx}
+                    calcDate={calcDate}
+                    trip={trip}
+                    notes={notes}
+                    plan={plan}
+                    disableButtons={disableButtons}
+                    handleAddDay={handleAddDay}
+                    handleNotesChange={handleNotesChange}
+                  />
+                );
+              })}
+          </div>
+          {/* <div className='fixed drop-shadow-md bottom-5 right-5 grid grid-cols-1 gap-y-1 w-40'>
+            <button
+              disabled={disableButtons}
+              className='bg-red-400 block w-full rounded-md text-sm font-semibold py-1 h-fit mb-2 px-2 hover:bg-red-700 hover:text-white hover:drop-shadow-md transition ease-in-out duration-250'
+              onClick={() => handleSave()}
+            >
+              Save
+            </button>
+          </div> */}
+        </div>
+      </main>
     </div>
   );
 };

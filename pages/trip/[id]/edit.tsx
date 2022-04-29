@@ -108,7 +108,7 @@ const Trip = ({ trip, allTags }) => {
       <HeadComponent title={'Edit Trip'} />
       <main className='mx-auto w-full xs:w-5/6 md:w-4/6 lg:w-1/3 bg-slate-100 my-8 p-4'>
         <h2 className='text-2xl md:text-3xl xl:text-4xl font-serif text-cyan-700 py-4 mb-4'>
-          Edit trip
+          Edit trip details
         </h2>
 
         <form className='flex flex-col relative' onSubmit={handleSubmit}>

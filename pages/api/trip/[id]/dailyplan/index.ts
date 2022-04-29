@@ -62,7 +62,7 @@ export default withApiAuthRequired(async function createDailyPlan(req, res) {
         },
       },
     });
-
+    console.log(trip.tags);
     if (trip.authorId !== user.sub) {
       res.status(401).end('Not authorised');
     }
