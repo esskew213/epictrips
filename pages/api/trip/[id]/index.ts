@@ -33,6 +33,28 @@ export default withApiAuthRequired(async function createTrip(req, res) {
     }
   }
 
+  if (method === 'DELETE') {
+    try {
+      const trip = await prisma.trip.findUnique({
+        where: {
+          id: parseInt(id),
+        },
+      });
+      if (trip.authorId !== user.sub) {
+        res.status(401).end('Not authorised');
+      } else {
+        await prisma.trip.delete({
+          where: {
+            id: parseInt(id),
+          },
+        });
+        res.json(`trip ${id} deleted`);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   if (method === 'PUT') {
     const { title, startDate, budget, tags } = req.body;
     try {
