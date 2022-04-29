@@ -14,23 +14,29 @@ export type TripCardProps = {
 };
 
 const TripCard = ({ id, title, author, tags, budget, likes }) => {
-  const sortedTags = tags.sort((a, b) => {
-    if (a.tag < b.tag) {
-      return -1;
-    }
-    if (a.tag > b.tag) {
-      return 1;
-    }
-    return 0;
-  });
+  let lastTag = 'CHILL';
+  let sortedTags = [];
+  if (tags.length > 0) {
+    sortedTags = tags.sort((a, b) => {
+      if (a.tag < b.tag) {
+        return -1;
+      }
+      if (a.tag > b.tag) {
+        return 1;
+      }
+      return 0;
+    });
+    lastTag = sortedTags[sortedTags.length - 1].tag;
+    console.log(lastTag);
+  }
 
   return (
     <div className='mx-auto overflow-hidden bg-yellow-400 my-4 rounded-lg drop-shadow-md h-72 w-60 relative hover:-translate-y-2 hover:drop-shadow-lg hover:ring-2 hover:ring-cyan-400/20 transition ease-in-out duration-200'>
       <Link href={`/trip/${id}/summary`}>
         <a>
           <Image
-            src='/images/beach1.jpg'
-            alt='beach'
+            src={`/images/${lastTag}.jpg`}
+            alt={lastTag}
             width='200'
             height='140'
             layout='responsive'
@@ -73,7 +79,7 @@ const TripCard = ({ id, title, author, tags, budget, likes }) => {
             {tags &&
               sortedTags.map((tag, idx) => (
                 <span
-                  className='rounded-full bg-cyan-700 px-2 py-1 tracking-wide text-xs ml-2 mb-2 text-white'
+                  className='rounded-full bg-cyan-900 drop-shadow-md px-2 py-1 tracking-wide text-xs ml-2 mb-2 text-white'
                   key={idx}
                 >
                   {tag.tag}
