@@ -185,7 +185,7 @@ const Summary = ({
   return (
     <div>
       <HeadComponent title={'Trip Summary'} />
-      <main className='w-screen'>
+      <main className='w-screen min-h-screen'>
         <div className='container w-5/6 mx-auto relative'>
           <div className='w-full block sm:flex justify-between items-baseline'>
             <div className='flex justify-start items-baseline'>
@@ -244,7 +244,7 @@ const Summary = ({
           <h2 className='mb-8'>
             by{' '}
             <Link href={`/${authorId}`}>
-              <a className='text-cyan-500 font-semibold hover:underline'>
+              <a className='text-cyan-500 text-lg font-semibold hover:underline'>
                 {authorName}
               </a>
             </Link>
