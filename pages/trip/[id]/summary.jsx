@@ -189,9 +189,19 @@ const Summary = ({
         <div className='container w-5/6 mx-auto relative'>
           <div className='w-full block sm:flex justify-between items-baseline'>
             <div className='flex justify-start items-baseline'>
-              <h1 className='inline-block text-xl sm:text-2xl lg:text-3xl w-max mt-8 mb-4 font-serif mr-4'>
-                {trip?.title || 'Your Trip'}
-              </h1>
+              <div className='fle flex-col flex-wrap'>
+                <h1 className='block text-xl sm:text-2xl lg:text-3xl w-fit mt-8 font-serif mr-4'>
+                  {trip?.title || 'Your Trip'}
+                </h1>
+                <h2 className='mb-4 sm:mb-8 w-fit overflow-hidden'>
+                  by{' '}
+                  <Link href={`/${authorId}`}>
+                    <a className='text-cyan-500 text-lg font-semibold hover:underline'>
+                      {authorName}
+                    </a>
+                  </Link>
+                </h2>
+              </div>
               <button className='inline-block mr-4' onClick={toggleLike}>
                 {!user ? null : liked ? (
                   <svg
@@ -225,15 +235,15 @@ const Summary = ({
               </button>
             </div>
             {isAuthor && (
-              <span className='sm:flex'>
+              <span className='grid grid-cols-2 sm:flex flex-wrap justify-end'>
                 <button
-                  className='bg-red-400 mr-4 font-semibold w-full h-fit xs:w-32 mb-4 block sm:inline-block px-2 rounded-md text-sm py-1 hover:bg-red-700 hover:text-white hover:drop-shadow-md transition ease-in-out duration-250'
+                  className='bg-red-400 font-semibold w-full h-fit sm:w-32 mb-4 inline-block px-2 rounded-l-md sm:rounded-md text-sm py-1 hover:bg-red-700 hover:text-white hover:drop-shadow-md transition ease-in-out duration-250'
                   onClick={(e) => router.push(`/trip/${trip.id}`)}
                 >
                   Edit Itinerary
                 </button>
                 <button
-                  className='bg-yellow-400 font-semibold  h-full w-full xs:w-32 mb-4 block sm:inline-block px-2 rounded-md text-sm py-1 hover:bg-yellow-500 hover:text-white hover:drop-shadow-md transition ease-in-out duration-250'
+                  className='bg-yellow-400 font-semibold  h-fit w-full sm:w-32 mb-4 inline-block px-2 rounded-r-md sm:rounded-md  text-sm py-1 hover:bg-yellow-500 hover:text-white hover:drop-shadow-md transition ease-in-out duration-250'
                   onClick={(e) => togglePublish(e)}
                 >
                   {published ? 'Make private' : 'Publish'}
@@ -241,14 +251,6 @@ const Summary = ({
               </span>
             )}
           </div>
-          <h2 className='mb-8'>
-            by{' '}
-            <Link href={`/${authorId}`}>
-              <a className='text-cyan-500 text-lg font-semibold hover:underline'>
-                {authorName}
-              </a>
-            </Link>
-          </h2>
 
           <div className='grid grid-cols-1 gap-y-4'>
             {dailyPlans &&
