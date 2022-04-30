@@ -5,7 +5,7 @@ const Footer = () => {
     <footer className='absolute bottom-0 mt-12 w-screen h-fit tracking-wide bg-slate-100 text-xs font-light px-8 py-2 text-slate-500 flex flex-row flex-wrap items-start justify-between'>
       <span className='p-1'>
         Copyright &copy; 2022 Sarah Quek. A capstone project for General
-        Assembly Singapore's SEI-35.
+        Assembly Singapore&apos;s SEI-35.
       </span>
       <span className='p-1'>
         Powered by{' '}
