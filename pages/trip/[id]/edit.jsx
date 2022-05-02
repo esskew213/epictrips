@@ -77,7 +77,11 @@ const Trip = ({ trip, allTags }) => {
   if (error) return <div>{error.message}</div>;
 
   const handleTitleChange = (e) => {
-    setTitle(e.target.value);
+    if (title.length === 0 && e.target.value === ' ') {
+      setTitle('');
+    } else {
+      setTitle(e.target.value);
+    }
   };
   const handleStartDateChange = (date) => {
     setStartDate(date);

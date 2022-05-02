@@ -13,7 +13,7 @@ const userHandler = async (req, res) => {
         id: id,
       },
       update: {
-        name: name,
+        id: id,
       },
       create: {
         id: id,

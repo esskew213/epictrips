@@ -65,7 +65,9 @@ export const getServerSideProps = async (context) => {
 const Profile = ({ trips, isAuthor, author }) => {
   const router = useRouter();
   const [bio, setBio] = useState(author.bio);
+  const [authorName, setAuthorName] = useState(author.name);
   const [editing, setEditing] = useState(false);
+  const [editingName, setEditingName] = useState(false);
   const { user, error, isLoading } = useUser();
   const { uid } = router.query;
   if (isLoading)
@@ -79,52 +81,134 @@ const Profile = ({ trips, isAuthor, author }) => {
   const publicTrips = trips.filter((trip) => trip.public === true);
   const privateTrips = trips.filter((trip) => trip.public === false);
 
-  const handleChange = (e) => {
-    setBio(e.target.value);
+  const handleBioChange = (e) => {
+    if (bio.length === 0 && e.target.value === ' ') {
+      setBio('');
+    } else {
+      setBio(e.target.value);
+    }
   };
-  const toggleEditing = () => {
+  const toggleBioEditing = () => {
     setEditing((prevState) => !prevState);
   };
-  const handleSubmit = async (e) => {
+  const handleBioSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await fetch(`/api/${uid}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bio),
+        body: JSON.stringify(bio.trim()),
       });
-      toggleEditing();
+      toggleBioEditing();
       router.replace(router.asPath);
       // toggleEditing();
     } catch (err) {
       console.error(err);
     }
   };
+  const handleNameSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch(`/api/${uid}/name`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(authorName),
+      });
+      toggleNameEditing();
+      router.replace(router.asPath);
+      // toggleEditing();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  const handleNameChange = (e) => {
+    if (authorName.length === 0 && e.target.value === ' ') {
+      setAuthorName('');
+    } else {
+      setAuthorName(e.target.value);
+    }
+  };
+  const toggleNameEditing = () => {
+    setEditingName((prevState) => !prevState);
+  };
+
   return (
     <div>
       <HeadComponent title={'Dashboard'} />
       <main className='w-screen'>
         <div className='container w-5/6 mx-auto'>
-          <h1 className='text-3xl pl-2 lg:pl-4 border-l-4 lg:border-l-8 border-l-cyan-700 text-cyan-700 sm:text-4xl lg:text-5xl w-max mt-8 mb-4 font-serif'>
-            {author?.name}
-          </h1>
+          {isAuthor ? (
+            <div className='mb-12'>
+              {editingName ? (
+                <div className='flex w-full'>
+                  <form
+                    onSubmit={handleNameSubmit}
+                    className='w-full flex-row items-end sm:flex sm:justify-between'
+                  >
+                    <input
+                      autoFocus
+                      type='text'
+                      onChange={handleNameChange}
+                      value={authorName}
+                      className='block h-fit text-3xl sm:text-4xl lg:text-5xl text-cyan-700 mt-8 mb-4 font-serif w-full sm:w-5/6 sm:mb-0 lg:w-11/12 sm:inline-block rounded-xl border border-slate-400'
+                    />
+                    <button className='text-sm font-semibold text-cyan-500 w-full h-fit sm:w-24 block xs:inline-block px-1 py-1 rounded-md border border-cyan-500 transition ease-in-out duration-250 hover:shadow-md hover:text-white  group  hover:bg-cyan-500'>
+                      Save
+                    </button>
+                  </form>
+                </div>
+              ) : (
+                <div className='w-full sm:flex items-baseline sm:justify-between'>
+                  <h1 className='text-3xl pl-2 lg:pl-4 border-l-4 lg:border-l-8 border-l-cyan-700 text-cyan-700 sm:text-4xl lg:text-5xl w-max mt-8 mb-4 font-serif'>
+                    {author?.name || 'Name'}
+                  </h1>
+                  <button
+                    onClick={toggleNameEditing}
+                    className='text-sm font-semibold text-cyan-500 w-full h-fit sm:w-24 block xs:inline-block px-1 py-1 rounded-md border border-cyan-500 transition ease-in-out duration-250 hover:shadow-md hover:text-white  group  hover:bg-cyan-500'
+                  >
+                    Edit
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      className='h-5 w-5 text-cyan-500 inline-block ml-2 -translate-y-0.5 group-hover:text-white transition ease-in-out duration-250'
+                      viewBox='0 0 20 20'
+                      fill='currentColor'
+                    >
+                      <path d='M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z' />
+                      <path
+                        fillRule='evenodd'
+                        d='M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z'
+                        clipRule='evenodd'
+                      />
+                    </svg>
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <h1 className='text-3xl pl-2 lg:pl-4 border-l-4 lg:border-l-8 border-l-cyan-700 text-cyan-700 sm:text-4xl lg:text-5xl w-max mt-8 mb-4 font-serif'>
+              {author?.name || 'Name'}
+            </h1>
+          )}
+
           {isAuthor ? (
             <div className='mb-12'>
               {editing ? (
                 <div className='flex w-full'>
                   <form
                     id='bio'
-                    onSubmit={handleSubmit}
-                    className='w-full sm:flex  sm:justify-between'
+                    onSubmit={handleBioSubmit}
+                    className='w-full sm:flex items-end  sm:justify-between'
                   >
                     <textarea
+                      maxLength={1000}
+                      autoFocus
                       form='bio'
-                      onChange={handleChange}
+                      onChange={handleBioChange}
                       value={bio}
                       className='block w-full h-36 sm:h-20 sm:w-5/6 mb-4 sm:mb-0 lg:w-11/12 sm:inline-block rounded-xl border border-slate-400'
                     />
-                    <button className='text-sm text-cyan-500 w-full self-center h-fit sm:w-24 block xs:inline-block px-1 py-1 rounded-md border border-cyan-500 transition ease-in-out duration-250 hover:shadow-md hover:text-white  group  hover:bg-cyan-500'>
-                      Save Bio
+                    <button className='text-sm font-semibold text-cyan-500 w-full h-fit sm:w-24 block xs:inline-block px-1 py-1 rounded-md border border-cyan-500 transition ease-in-out duration-250 hover:shadow-md hover:text-white  group  hover:bg-cyan-500'>
+                      Save
                     </button>
                   </form>
                 </div>
@@ -134,10 +218,10 @@ const Profile = ({ trips, isAuthor, author }) => {
                     {author?.bio || 'Bio'}
                   </div>
                   <button
-                    onClick={toggleEditing}
-                    className='text-sm text-cyan-500 w-full self-center h-fit sm:w-24 block xs:inline-block px-1 py-1 rounded-md border border-cyan-500 transition ease-in-out duration-250 hover:shadow-md hover:text-white  group  hover:bg-cyan-500'
+                    onClick={toggleBioEditing}
+                    className='text-sm font-semibold text-cyan-500 w-full self-baseline h-fit sm:w-24 block xs:inline-block px-1 py-1 rounded-md border border-cyan-500 transition ease-in-out duration-250 hover:shadow-md hover:text-white  group  hover:bg-cyan-500'
                   >
-                    Edit Bio
+                    Edit
                     <svg
                       xmlns='http://www.w3.org/2000/svg'
                       className='h-5 w-5 text-cyan-500 inline-block ml-2 -translate-y-0.5 group-hover:text-white transition ease-in-out duration-250'

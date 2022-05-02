@@ -18,9 +18,9 @@ const Header = () => {
                   src={user?.picture}
                   alt={user?.name}
                 />
-                <span className='mx-3 text-md hidden sm:inline-block '>
+                {/* <span className='mx-3 text-md hidden sm:inline-block '>
                   <span className='font-bold'>{user?.name || 'user'}</span>
-                </span>
+                </span> */}
               </a>
             </Link>
           </span>
