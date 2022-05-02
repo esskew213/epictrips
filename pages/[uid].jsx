@@ -64,8 +64,8 @@ export const getServerSideProps = async (context) => {
 
 const Profile = ({ trips, isAuthor, author }) => {
   const router = useRouter();
-  const [bio, setBio] = useState(author.bio);
-  const [authorName, setAuthorName] = useState(author.name);
+  const [bio, setBio] = useState(author.bio || '');
+  const [authorName, setAuthorName] = useState(author.name || '');
   const [editing, setEditing] = useState(false);
   const [editingName, setEditingName] = useState(false);
   const { user, error, isLoading } = useUser();
@@ -147,6 +147,7 @@ const Profile = ({ trips, isAuthor, author }) => {
                   >
                     <input
                       autoFocus
+                      required
                       type='text'
                       onChange={handleNameChange}
                       value={authorName}
@@ -215,7 +216,7 @@ const Profile = ({ trips, isAuthor, author }) => {
               ) : (
                 <div className='w-full sm:flex sm:justify-between'>
                   <div className='block w-full text-justify mb-4 sm:mb-0 sm:w-5/6 lg:w-11/12 sm:inline-block pr-4'>
-                    {author?.bio || 'Bio'}
+                    {author?.bio || 'Tell the world about yourself!'}
                   </div>
                   <button
                     onClick={toggleBioEditing}
