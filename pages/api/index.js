@@ -42,11 +42,21 @@ export default async function searchTrips(req, res) {
           tags: true,
         },
       });
-      console.log(titleMatches);
-      console.log(notesMatches);
-      const matchingTrips = Array.from(
-        new Set([...titleMatches, ...notesMatches])
-      );
+
+      const matchingTripsObj = {};
+      for (let m of titleMatches) {
+        matchingTripsObj[m.id] = m;
+      }
+      for (let m of notesMatches) {
+        matchingTripsObj[m.id] = m;
+      }
+      const matchingTrips = Object.values(matchingTripsObj);
+      // console.log(titleMatches);
+      // console.log(notesMatches);
+      // const matchingTrips = Array.from(
+      //   new Set([...titleMatches, ...notesMatches])
+      // );
+      console.log(matchingTrips);
       res.json(matchingTrips);
     } catch (err) {
       console.error(err);
