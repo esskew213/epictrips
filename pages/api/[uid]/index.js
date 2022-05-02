@@ -25,6 +25,7 @@ export default withApiAuthRequired(async function createTrip(req, res) {
       res.status(401).end('Not authorised');
     } catch (err) {
       console.error(err);
+      res.status(500).end('Something went wrong.');
     }
   }
 });

@@ -5,6 +5,9 @@ export default withApiAuthRequired(async function createTrip(req, res) {
   const { id } = req.query;
   const { method, body } = req;
   const { user } = getSession(req, res);
+  if (Boolean(!parseInt(id))) {
+    res.status(404).end();
+  }
   console.log(body);
   if (method === 'PUT') {
     try {
@@ -19,6 +22,7 @@ export default withApiAuthRequired(async function createTrip(req, res) {
       res.json('published');
     } catch (err) {
       console.error(err);
+      res.status(500).end('Something went wrong.');
     }
   }
 });

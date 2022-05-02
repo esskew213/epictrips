@@ -9,7 +9,9 @@ export default withApiAuthRequired(async function createDailyPlan(req, res) {
 
   if (method === 'DELETE') {
     const { id } = req.query;
-
+    if (Boolean(!parseInt(id))) {
+      res.status(404).end();
+    }
     const { toDeleteId } = req.body;
 
     try {
@@ -63,7 +65,9 @@ export default withApiAuthRequired(async function createDailyPlan(req, res) {
 
   if (method === 'POST') {
     const { id } = req.query;
-    console.log(typeof id);
+    if (Boolean(!parseInt(id))) {
+      res.status(404).end();
+    }
     const { predecessorId } = req.body;
     try {
       const currentNextDay = await prisma.dailyPlan.findUnique({
@@ -174,6 +178,9 @@ export default withApiAuthRequired(async function createDailyPlan(req, res) {
       });
     } catch (err) {
       console.error(err);
+      res.status(500).end('Something went wrong.');
     }
   }
+
+  res.status(500).end('Something went wrong.');
 });

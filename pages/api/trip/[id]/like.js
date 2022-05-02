@@ -5,7 +5,9 @@ export default withApiAuthRequired(async function createTrip(req, res) {
   const { id } = req.query;
   const { method } = req;
   const { user } = getSession(req, res);
-
+  if (Boolean(!parseInt(id))) {
+    res.status(404).end();
+  }
   if (method === 'POST') {
     try {
       await prisma.tripLike.create({
@@ -31,6 +33,9 @@ export default withApiAuthRequired(async function createTrip(req, res) {
       res.json('like deleted');
     } catch (err) {
       console.error(err);
+      res.status(500).end('Something went wrong.');
     }
   }
+
+  res.status(500).end('Something went wrong.');
 });

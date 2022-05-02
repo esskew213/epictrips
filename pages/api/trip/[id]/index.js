@@ -33,6 +33,7 @@ export default withApiAuthRequired(async function createTrip(req, res) {
       res.json(trip);
     } catch (err) {
       console.error(err);
+      res.status(500).end('Something went wrong.');
     }
   }
 
@@ -55,6 +56,7 @@ export default withApiAuthRequired(async function createTrip(req, res) {
       }
     } catch (err) {
       console.error(err);
+      res.status(500).end('Something went wrong.');
     }
   }
 
@@ -104,6 +106,8 @@ export default withApiAuthRequired(async function createTrip(req, res) {
       res.json('UPDATED');
     } catch (err) {
       console.error(err);
+      res.status(500).end('Something went wrong.');
     }
   }
+  res.status(500).end('Something went wrong.');
 });
