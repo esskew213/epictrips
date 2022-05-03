@@ -28,5 +28,4 @@ export default withApiAuthRequired(async function updateDailyPlans(req, res) {
       res.status(500).end('Something went wrong.');
     }
   }
-  res.status(500).end('Something went wrong.');
 });

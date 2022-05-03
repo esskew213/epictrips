@@ -113,6 +113,7 @@ const Summary = ({
   likedByUser,
 }) => {
   const [liked, setLiked] = useState(likedByUser);
+  const [disableButtons, setDisableButtons] = useState(false);
   const { user, error, isLoading } = useUser();
   const router = useRouter();
   const { public: published } = trip;
@@ -127,6 +128,7 @@ const Summary = ({
   // runs when user is done with entire page
   const togglePublish = async (evt) => {
     evt.preventDefault();
+    setDisableButtons(true);
     try {
       const body = !published;
       const res = await fetch(`/api/trip/${trip.id}/publish`, {
@@ -139,8 +141,9 @@ const Summary = ({
       console.error(err);
     }
   };
-  const handleSave = () => {
-    router.push(`/${authorId}`);
+  const handleEditItinerary = () => {
+    setDisableButtons(true);
+    router.push(`/trip/${trip.id}`);
   };
   const toggleLike = async () => {
     // if liked, unlike by deleting entry in DB
@@ -189,7 +192,7 @@ const Summary = ({
         <div className='container w-5/6 mx-auto relative'>
           <div className='w-full block sm:flex justify-between items-baseline'>
             <div className='flex justify-start items-baseline'>
-              <div className='fle flex-col flex-wrap'>
+              <div className='flex flex-col flex-wrap'>
                 <h1 className='block text-xl sm:text-2xl lg:text-3xl w-fit mt-8 font-serif mr-4'>
                   {trip?.title || 'Your Trip'}
                 </h1>
@@ -237,14 +240,16 @@ const Summary = ({
             {isAuthor && (
               <span className='grid grid-cols-2 sm:flex flex-wrap justify-end'>
                 <button
-                  className='bg-red-400 font-semibold w-full h-fit sm:w-32 mb-4 inline-block px-2 rounded-l-md sm:rounded-md text-sm py-1 hover:bg-red-700 hover:text-white hover:drop-shadow-md transition ease-in-out duration-250'
-                  onClick={(e) => router.push(`/trip/${trip.id}`)}
+                  className=' disabled:opacity-50 bg-red-400 font-semibold md:mr-2 w-full h-fit sm:w-32 mb-4 inline-block px-2 rounded-l-md sm:rounded-md text-sm py-1 hover:bg-red-700 hover:text-white hover:drop-shadow-md transition ease-in-out duration-250'
+                  onClick={handleEditItinerary}
+                  disabled={disableButtons}
                 >
                   Edit Itinerary
                 </button>
                 <button
-                  className='bg-yellow-400 font-semibold  h-fit w-full sm:w-32 mb-4 inline-block px-2 rounded-r-md sm:rounded-md  text-sm py-1 hover:bg-yellow-500 hover:text-white hover:drop-shadow-md transition ease-in-out duration-250'
+                  className=' disabled:opacity-50 bg-yellow-400 font-semibold  h-fit w-full sm:w-32 mb-4 inline-block px-2 rounded-r-md sm:rounded-md  text-sm py-1 hover:bg-yellow-500 hover:text-white hover:drop-shadow-md transition ease-in-out duration-250'
                   onClick={(e) => togglePublish(e)}
+                  disabled={disableButtons}
                 >
                   {published ? 'Make private' : 'Publish'}
                 </button>

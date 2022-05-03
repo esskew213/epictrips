@@ -60,7 +60,7 @@ export default async function searchTrips(req, res) {
       res.json(matchingTrips);
     } catch (err) {
       console.error(err);
-      res.status(500).end('Server error');
+      res.status(500).end('Something went wrong.');
     }
   }
 }

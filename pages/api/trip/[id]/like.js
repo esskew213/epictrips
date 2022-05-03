@@ -19,6 +19,7 @@ export default withApiAuthRequired(async function createTrip(req, res) {
       res.json('like upserted');
     } catch (err) {
       console.error(err);
+      res.status(500).end('Something went wrong.');
     }
   }
 
@@ -36,6 +37,4 @@ export default withApiAuthRequired(async function createTrip(req, res) {
       res.status(500).end('Something went wrong.');
     }
   }
-
-  res.status(500).end('Something went wrong.');
 });

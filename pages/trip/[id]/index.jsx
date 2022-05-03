@@ -184,8 +184,8 @@ const TripDetails = () => {
       <HeadComponent title={'Add Details'} />
       <main className='w-screen'>
         <div className='container w-5/6 mx-auto relative'>
-          <div className='w-full block sm:flex justify-between items-baseline'>
-            <div className='block md:flex items-baseline mt-8 mb-4 '>
+          <div className='w-full block sm:flex flex-wrap justify-between items-baseline'>
+            <div className='flex flex-wrap items-baseline mt-8 mb-4 '>
               <h1 className='text-xl shrink-0 sm:text-2xl lg:text-3xl font-serif mr-2'>
                 {trip?.title || 'your trip'}
               </h1>
@@ -193,17 +193,17 @@ const TripDetails = () => {
                 {disableButtons ? 'Saving...' : `Last saved ${lastSavedTime}`}
               </span>
             </div>
-            <span className='block md:flex'>
+            <span className='block sm:flex'>
               <button
                 disabled={disableButtons}
-                className='bg-red-400 mr-2 font-semibold text-sm w-full h-fit sm:w-32 mb-4 block sm:inline-block px-2 rounded-md text-sm py-1 hover:bg-red-700 hover:text-white hover:drop-shadow-md transition ease-in-out duration-250'
+                className=' disabled:opacity-50  bg-red-400 sm:mr-2 font-semibold text-sm w-full h-fit sm:w-32 mb-4 block sm:inline-block px-2 rounded-md text-sm py-1 hover:bg-red-700 hover:text-white hover:drop-shadow-md transition ease-in-out duration-250'
                 onClick={() => handleEditTrip()}
               >
                 Edit trip details
               </button>
               <button
                 disabled={disableButtons}
-                className='bg-yellow-400 font-semibold text-sm h-full w-full sm:w-32 mb-4 block sm:inline-block px-2 rounded-md text-sm py-1 hover:bg-yellow-500 hover:text-white hover:drop-shadow-md transition ease-in-out duration-250'
+                className=' disabled:opacity-50 bg-yellow-400 font-semibold text-sm h-full w-full sm:w-32 mb-4 block sm:inline-block px-2 rounded-md text-sm py-1 hover:bg-yellow-500 hover:text-white hover:drop-shadow-md transition ease-in-out duration-250'
                 onClick={(e) => handlePageSubmit(e)}
               >
                 Preview
