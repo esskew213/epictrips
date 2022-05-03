@@ -3,8 +3,6 @@ import prisma from '../../lib/prisma';
 
 // API to create new trip
 export default async function searchTrips(req, res) {
-  const { user } = getSession(req, res);
-
   if (req.method === 'POST') {
     const { body } = req;
     const searchStr = body.split(' ').join(' | ');
