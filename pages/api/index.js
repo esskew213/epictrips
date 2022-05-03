@@ -60,5 +60,7 @@ export default async function searchTrips(req, res) {
       console.error(err);
       res.status(500).end('Something went wrong.');
     }
+  } else {
+    res.status(405).end('Method not allowed.');
   }
 }

@@ -6,6 +6,7 @@ export default withApiAuthRequired(async function updateDailyPlans(req, res) {
   const { id } = req.query;
   if (Boolean(!parseInt(id))) {
     res.status(404).end();
+    return;
   }
   const { body, method } = req;
   const { user } = getSession(req, res);
@@ -27,5 +28,7 @@ export default withApiAuthRequired(async function updateDailyPlans(req, res) {
       console.error(err);
       res.status(500).end('Something went wrong.');
     }
+  } else {
+    res.status(405).end('Method not allowed.');
   }
 });

@@ -7,6 +7,7 @@ export default withApiAuthRequired(async function createTrip(req, res) {
   const { user } = getSession(req, res);
   if (Boolean(!parseInt(id))) {
     res.status(404).end();
+    return;
   }
   if (method === 'POST') {
     try {
@@ -21,9 +22,7 @@ export default withApiAuthRequired(async function createTrip(req, res) {
       console.error(err);
       res.status(500).end('Something went wrong.');
     }
-  }
-
-  if (method === 'DELETE') {
+  } else if (method === 'DELETE') {
     try {
       await prisma.tripLike.deleteMany({
         where: {
@@ -36,5 +35,7 @@ export default withApiAuthRequired(async function createTrip(req, res) {
       console.error(err);
       res.status(500).end('Something went wrong.');
     }
+  } else {
+    res.status(405).end('Method not allowed.');
   }
 });

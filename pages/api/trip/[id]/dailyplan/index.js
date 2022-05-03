@@ -11,6 +11,7 @@ export default withApiAuthRequired(async function createDailyPlan(req, res) {
     const { id } = req.query;
     if (Boolean(!parseInt(id))) {
       res.status(404).end();
+      return;
     }
     const { toDeleteId } = req.body;
 
@@ -61,12 +62,11 @@ export default withApiAuthRequired(async function createDailyPlan(req, res) {
     } catch (err) {
       console.error(err);
     }
-  }
-
-  if (method === 'POST') {
+  } else if (method === 'POST') {
     const { id } = req.query;
     if (Boolean(!parseInt(id))) {
       res.status(404).end();
+      return;
     }
     const { predecessorId } = req.body;
     try {
@@ -104,13 +104,12 @@ export default withApiAuthRequired(async function createDailyPlan(req, res) {
     } catch (err) {
       console.error(err);
     }
-  }
-
-  if (method === 'GET') {
+  } else if (method === 'GET') {
     const { id } = req.query;
     console.log(Boolean(parseInt(id)));
     if (Boolean(!parseInt(id))) {
       res.status(404).end();
+      return;
     }
     try {
       const trip = await prisma.trip.findUnique({
@@ -180,5 +179,8 @@ export default withApiAuthRequired(async function createDailyPlan(req, res) {
       console.error(err);
       res.status(500).end('Something went wrong.');
     }
+  } else {
+    res.status(405).end('Method not allowed.');
+    return;
   }
 });

@@ -7,7 +7,7 @@ export default withApiAuthRequired(async function createTrip(req, res) {
   const { method } = req;
   const { user } = getSession(req, res);
   if (Boolean(!parseInt(id))) {
-    res.status(404).end();
+    return res.status(404).end();
   }
   if (method === 'GET') {
     try {
@@ -28,6 +28,7 @@ export default withApiAuthRequired(async function createTrip(req, res) {
       // check if authorised
       if (trip.authorId !== user.sub) {
         res.status(401).end('Not authorised');
+        return;
       }
       console.log(trip);
       res.json(trip);
@@ -35,9 +36,7 @@ export default withApiAuthRequired(async function createTrip(req, res) {
       console.error(err);
       res.status(500).end('Something went wrong.');
     }
-  }
-
-  if (method === 'DELETE') {
+  } else if (method === 'DELETE') {
     try {
       const trip = await prisma.trip.findUnique({
         where: {
@@ -46,6 +45,7 @@ export default withApiAuthRequired(async function createTrip(req, res) {
       });
       if (trip.authorId !== user.sub) {
         res.status(401).end('Not authorised');
+        return;
       } else {
         await prisma.trip.delete({
           where: {
@@ -58,9 +58,7 @@ export default withApiAuthRequired(async function createTrip(req, res) {
       console.error(err);
       res.status(500).end('Something went wrong.');
     }
-  }
-
-  if (method === 'PUT') {
+  } else if (method === 'PUT') {
     const { title, startDate, budget, tags } = req.body;
     try {
       const trip = await prisma.trip.findUnique({
@@ -71,6 +69,7 @@ export default withApiAuthRequired(async function createTrip(req, res) {
 
       if (trip.authorId !== user.sub) {
         res.status(401).end('Not authorised');
+        return;
       }
 
       const tagsToUpdate = [];
@@ -108,5 +107,8 @@ export default withApiAuthRequired(async function createTrip(req, res) {
       console.error(err);
       res.status(500).end('Something went wrong.');
     }
+  } else {
+    res.status(405).end('Method not allowed.');
+    return;
   }
 });

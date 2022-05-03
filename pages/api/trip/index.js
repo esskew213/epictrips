@@ -47,5 +47,7 @@ export default withApiAuthRequired(async function createTrip(req, res) {
       console.error(err);
       res.status(500).end('Something went wrong');
     }
+  } else {
+    res.status(405).end('Method not allowed.');
   }
 });
