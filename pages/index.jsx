@@ -9,6 +9,7 @@ import { TripCardProps } from '../components/TripCard';
 import { useRouter } from 'next/router';
 import HeadComponent from '../components/Head';
 import { useDebounce } from '../hook/useDebounce';
+import TagComponent from '../components/TagComponent';
 export const getServerSideProps = async () => {
   const trips = await prisma.trip.findMany({
     where: { public: true },
@@ -40,14 +41,50 @@ export const getServerSideProps = async () => {
 // };
 
 const Home = (props) => {
-  console.log(props.trips);
+  // for (let t of props.trips[0].tags) {
+  //   t.ta
+  // }
+
   const { user, error, isLoading } = useUser();
   const router = useRouter();
+  const [tagFilters, setTagFilters] = useState({
+    HIKING: false,
+    CHILL: false,
+    ROMANTIC: false,
+    THRILLSEEKING: false,
+    ADVENTURE: false,
+    SOLO: false,
+    ROADTRIP: false,
+    FAMILY: false,
+  });
   const [results, setResults] = useState(props.trips);
+  const [displayedResults, setDisplayedResults] = useState(props.trips);
   const [isSearching, setIsSearching] = useState(false);
   const [searchStr, setSearchStr] = useState('');
   const debouncedSearchStr = useDebounce(searchStr, 600);
 
+  const handleSelectTag = (e, key) => {
+    setTagFilters({ ...tagFilters, [key]: !tagFilters[key] });
+  };
+  useEffect(() => {
+    const tagSet = new Set(
+      Object.keys(tagFilters).filter((key) => tagFilters[key] === true)
+    );
+    if (tagSet.size === 0) {
+      setDisplayedResults(results);
+    } else {
+      const toDisplay = [];
+      for (let result of results) {
+        for (let tag of result.tags) {
+          if (tagSet.has(tag.tag)) {
+            toDisplay.push(result);
+            break;
+          }
+        }
+      }
+      setDisplayedResults(toDisplay);
+    }
+  }, [tagFilters, results]);
   const handleChange = (e) => {
     if (searchStr.length === 0 && e.target.value === ' ') {
       setSearchStr('');
@@ -134,13 +171,25 @@ const Home = (props) => {
         </div>
 
         <div className='w-5/6 mx-auto'>
-          <div className='border-b border-b-slate-200 h-8 mb-4'>
-            <h2 className='text-xl uppercase tracking-wider mr-4 font-semibold '>
+          <div className='border-b border-b-slate-200 w-full flex flex-wrap justify-between pb-2'>
+            <h2 className='text-xl uppercase tracking-wider mr-4 mb-4 lg:mb-0 font-semibold w-fit inline-block'>
               FIND INSPIRATION
             </h2>
+            <span className='flex flex-wrap'>
+              {Object.keys(tagFilters).map((key, idx) => {
+                return (
+                  <TagComponent
+                    key={idx}
+                    name={key}
+                    isSelected={tagFilters[key]}
+                    handleSelectTag={handleSelectTag}
+                  />
+                );
+              })}
+            </span>
           </div>
           <div className='grid w-full place-content-between grid-cols-1 sm:grid-cols-2 md:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4 gap-x-12 gap-y-0'>
-            {results.map((trip) => (
+            {displayedResults.map((trip) => (
               <TripCard
                 key={trip.id}
                 id={trip.id}

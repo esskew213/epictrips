@@ -27,7 +27,6 @@ const TripCard = ({ id, title, author, tags, budget, likes }) => {
       return 0;
     });
     lastTag = sortedTags[sortedTags.length - 1].tag;
-    console.log(lastTag);
   }
 
   return (
