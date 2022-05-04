@@ -239,7 +239,7 @@ const Profile = ({ trips, isAuthor, author }) => {
                 </div>
               ) : (
                 <div className='w-full sm:flex sm:justify-between'>
-                  <div className='block w-full text-justify mb-4 sm:mb-0 sm:w-5/6 lg:w-11/12 sm:inline-block pr-4'>
+                  <div className='block w-full  mb-4 sm:mb-0 sm:w-5/6 lg:w-11/12 sm:inline-block pr-4'>
                     {author?.bio || 'Tell the world about yourself!'}
                   </div>
                   <button
@@ -265,7 +265,7 @@ const Profile = ({ trips, isAuthor, author }) => {
               )}
             </div>
           ) : (
-            <div className='block mb-12 w-full text-justify sm:inline-block'>
+            <div className='block mb-12 w-full  sm:inline-block'>
               {author?.bio || 'Bio'}
             </div>
           )}
@@ -274,18 +274,20 @@ const Profile = ({ trips, isAuthor, author }) => {
               Published Trips
             </h2>
           </div>
-          <div className='grid w-full place-content-between grid-cols-1 sm:grid-cols-2 md:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4 gap-x-12 gap-y-0 mb-8'>
+          <div className='overflow-y-auto flex flex-nowrap w-full mb-8'>
             {publicTrips.length > 0 ? (
               publicTrips.map((trip) => (
-                <TripCard
-                  key={trip.id}
-                  id={trip.id}
-                  author={trip.author}
-                  title={trip.title}
-                  tags={trip?.tags}
-                  budget={trip.budget}
-                  likes={trip._count?.likes}
-                />
+                <span className='mr-8' key={trip.id}>
+                  <TripCard
+                    key={trip.id}
+                    id={trip.id}
+                    author={trip.author}
+                    title={trip.title}
+                    tags={trip?.tags}
+                    budget={trip.budget}
+                    likes={trip._count?.likes}
+                  />
+                </span>
               ))
             ) : (
               <p className='text-sm text-slate-700'>
@@ -322,18 +324,20 @@ const Profile = ({ trips, isAuthor, author }) => {
                   </Link>
                 </button>
               </div>
-              <div className='grid w-full place-content-between grid-cols-1 sm:grid-cols-2 md:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4 gap-x-12 gap-y-0 mb-8'>
+              <div className='overflow-y-auto flex flex-nowrap w-full mb-8'>
                 {privateTrips.length > 0 ? (
                   privateTrips.map((trip) => (
-                    <TripCard
-                      key={trip.id}
-                      id={trip.id}
-                      author={trip.author}
-                      title={trip.title}
-                      tags={trip?.tags}
-                      budget={trip.budget}
-                      likes={trip._count?.likes}
-                    />
+                    <span className='mr-8' key={trip.id}>
+                      <TripCard
+                        key={trip.id}
+                        id={trip.id}
+                        author={trip.author}
+                        title={trip.title}
+                        tags={trip?.tags}
+                        budget={trip.budget}
+                        likes={trip._count?.likes}
+                      />
+                    </span>
                   ))
                 ) : (
                   <p className='text-sm text-slate-700'>
