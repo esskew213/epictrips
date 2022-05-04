@@ -23,7 +23,26 @@ export const getServerSideProps = async (context) => {
 
   const author = await prisma.user.findUnique({
     where: { id: authorId },
+    include: {
+      likedTrips: {
+        include: {
+          trip: {
+            include: {
+              author: {
+                select: { name: true },
+              },
+              tags: true,
+              _count: { select: { likes: true } },
+            },
+            // orderBy: {
+            //   updatedAt: 'desc',
+            // },
+          },
+        },
+      },
+    },
   });
+
   if (!author) {
     return {
       redirect: {
@@ -51,7 +70,11 @@ export const getServerSideProps = async (context) => {
     props: {
       trips: JSON.parse(JSON.stringify(trips)),
       isAuthor: isAuthor,
-      author: { name: author.name, bio: author.bio },
+      author: {
+        name: author.name,
+        bio: author.bio,
+        likedTrips: JSON.parse(JSON.stringify(author.likedTrips)),
+      },
     },
   };
 };
@@ -63,6 +86,7 @@ export const getServerSideProps = async (context) => {
 // };
 
 const Profile = ({ trips, isAuthor, author }) => {
+  console.log('LIKES', author.likedTrips.trip);
   const router = useRouter();
   const [bio, setBio] = useState(author.bio || '');
   const [authorName, setAuthorName] = useState(author.name || '');
@@ -306,15 +330,43 @@ const Profile = ({ trips, isAuthor, author }) => {
                       id={trip.id}
                       author={trip.author}
                       title={trip.title}
-                      tags={trip.tags}
+                      tags={trip?.tags}
                       budget={trip.budget}
-                      likes={trip._count.likes}
+                      likes={trip._count?.likes}
                     />
                   ))
                 ) : (
                   <p className='text-sm text-slate-700'>
                     No drafts yet. Try adding a new trip!
                   </p>
+                )}
+              </div>
+            </>
+          )}
+
+          {isAuthor && (
+            <>
+              <div className='border-b border-b-slate-200 h-12 flex justify-between items-center mb-4'>
+                <h2 className='inline-block text-xl uppercase tracking-wider mr-4 font-semibold'>
+                  My Favourites
+                </h2>
+              </div>
+              <div className='overflow-y-auto flex flex-nowrap w-full mb-8'>
+                {author?.likedTrips?.length > 0 ? (
+                  author.likedTrips.map((trip) => (
+                    <span className='mr-8' key={trip.trip.id}>
+                      <TripCard
+                        id={trip.trip.id}
+                        author={trip.trip.author}
+                        title={trip.trip.title}
+                        tags={trip.trip?.tags}
+                        budget={trip.trip.budget}
+                        likes={trip.trip?._count?.likes}
+                      />
+                    </span>
+                  ))
+                ) : (
+                  <p className='text-sm text-slate-700'>No favourites yet.</p>
                 )}
               </div>
             </>

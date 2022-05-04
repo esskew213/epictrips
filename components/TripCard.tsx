@@ -31,7 +31,7 @@ const TripCard = ({ id, title, author, tags, budget, likes }) => {
   }
 
   return (
-    <div className='mx-auto overflow-hidden bg-yellow-400 my-4 rounded-lg drop-shadow-md h-72 w-60 relative hover:-translate-y-2 hover:drop-shadow-lg hover:ring-2 hover:ring-cyan-400/20 transition ease-in-out duration-200'>
+    <div className='mx-auto overflow-hidden shrink-0 bg-yellow-400 my-4 rounded-lg drop-shadow-md h-72 w-60 relative hover:-translate-y-2 hover:drop-shadow-lg hover:ring-2 hover:ring-cyan-400/20 transition ease-in-out duration-200'>
       <Link href={`/trip/${id}/summary`}>
         <a>
           <Image
