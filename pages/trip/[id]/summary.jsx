@@ -212,13 +212,13 @@ const Summary = ({
           <div className='w-full block sm:flex justify-between items-baseline'>
             <div className='flex justify-start items-baseline'>
               <div className='flex flex-col flex-wrap'>
-                <h1 className='block text-xl sm:text-2xl lg:text-3xl w-fit mt-8 font-serif mr-4'>
+                <h1 className='block max-w-full text-xl sm:text-2xl lg:text-3xl w-fit mt-8 font-serif mr-4'>
                   {trip?.title || 'Your Trip'}
                 </h1>
-                <h2 className='mb-4 sm:mb-8 w-fit'>
+                <h2 className='mb-4 sm:mb-8 w-fit  max-w-full truncate overflow-hidden'>
                   by{' '}
                   <Link href={`/${authorId}`}>
-                    <a className='text-cyan-500 text-lg font-semibold hover:underline'>
+                    <a className='text-cyan-500 truncate max-w-full text-lg font-semibold hover:underline'>
                       {authorName}
                     </a>
                   </Link>

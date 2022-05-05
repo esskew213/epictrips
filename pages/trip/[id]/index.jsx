@@ -186,7 +186,7 @@ const TripDetails = () => {
         <div className='container w-5/6 mx-auto relative'>
           <div className='w-full block sm:flex flex-wrap justify-between items-baseline'>
             <div className='flex flex-wrap items-baseline mt-8 mb-4 '>
-              <h1 className='text-xl shrink-0 sm:text-2xl lg:text-3xl font-serif mr-2'>
+              <h1 className='text-xl max-w-full shrink-0 sm:text-2xl lg:text-3xl font-serif mr-2'>
                 {trip?.title || 'your trip'}
               </h1>
               <span className='text-xs shrink-0 text-slate-400 italic mr-4'>

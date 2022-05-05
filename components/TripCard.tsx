@@ -43,8 +43,10 @@ const TripCard = ({ id, title, author, tags, budget, likes }) => {
             priority
           />
           <div className='px-2 mt-2'>
-            <p className='text-lg tracking-wider font-light '>{title}</p>
-            <p className='text-xs font-semibold'>by {author.name}</p>
+            <p className='text-md max-h-14 overflow-y-auto tracking-wider overflow-x- font-light '>
+              {title}
+            </p>
+            <p className='text-xs font-semibold truncate'>by {author.name}</p>
             {likes > 0 ? (
               <p className='absolute bottom-2 left-2 bg-red-400 rounded-full text-white  px-2 text-md font-semibold'>
                 <span>{likes}</span>

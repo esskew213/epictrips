@@ -173,6 +173,7 @@ const Profile = ({ trips, isAuthor, author }) => {
                       autoFocus
                       required
                       type='text'
+                      maxLength='20'
                       onChange={handleNameChange}
                       value={authorName}
                       className='block h-fit text-3xl sm:text-4xl lg:text-5xl text-cyan-700 mt-8 mb-4 font-serif w-full sm:w-5/6 sm:mb-0 lg:w-11/12 sm:inline-block rounded-xl border border-slate-400'
@@ -184,7 +185,7 @@ const Profile = ({ trips, isAuthor, author }) => {
                 </div>
               ) : (
                 <div className='w-full sm:flex items-baseline sm:justify-between'>
-                  <h1 className='text-3xl pl-2 lg:pl-4 border-l-4 lg:border-l-8 border-l-cyan-700 text-cyan-700 sm:text-4xl lg:text-5xl w-max mt-8 mb-4 font-serif'>
+                  <h1 className='truncate max-w-full overflow-hidden text-3xl pl-2 lg:pl-4 border-l-4 lg:border-l-8 border-l-cyan-700 text-cyan-700 sm:text-4xl lg:text-5xl w-max mt-8 mb-4 font-serif'>
                     {author?.name || 'Name'}
                   </h1>
                   <button

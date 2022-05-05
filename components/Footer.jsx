@@ -16,7 +16,10 @@ const Footer = () => {
         <a className='font-semibold' href='https://supabase.com/'>
           Supabase
         </a>{' '}
-        and{' '}
+        <a className='font-semibold' href='https://auth0.com/'>
+          Auth0
+        </a>
+        , and{' '}
         <a className='font-semibold' href='https://www.prisma.io/'>
           Prisma
         </a>
