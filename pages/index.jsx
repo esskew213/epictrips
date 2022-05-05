@@ -48,11 +48,11 @@ const Home = (props) => {
   const { user, error, isLoading } = useUser();
   const router = useRouter();
   const [tagFilters, setTagFilters] = useState({
-    ADVENTURE: false,
     CHILL: false,
     FAMILY: false,
     HIKING: false,
     ROADTRIP: false,
+    ROMANTIC: false,
     SOLO: false,
     THRILLSEEKING: false,
   });
