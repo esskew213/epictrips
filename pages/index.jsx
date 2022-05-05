@@ -48,14 +48,13 @@ const Home = (props) => {
   const { user, error, isLoading } = useUser();
   const router = useRouter();
   const [tagFilters, setTagFilters] = useState({
-    HIKING: false,
-    CHILL: false,
-    ROMANTIC: false,
-    THRILLSEEKING: false,
     ADVENTURE: false,
-    SOLO: false,
-    ROADTRIP: false,
+    CHILL: false,
     FAMILY: false,
+    HIKING: false,
+    ROADTRIP: false,
+    SOLO: false,
+    THRILLSEEKING: false,
   });
   const [results, setResults] = useState(props.trips);
   const [displayedResults, setDisplayedResults] = useState(props.trips);

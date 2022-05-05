@@ -9,6 +9,15 @@ import Loader from '../../../components/Loader';
 import Link from 'next/link';
 import HeadComponent from '../../../components/Head';
 export const getServerSideProps = async (context) => {
+  if (!parseInt(context.params.id)) {
+    console.log(context.params.id);
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/',
+      },
+    };
+  }
   const id = parseInt(context.params.id);
   const { req, res } = context;
   const session = getSession(req, res);
@@ -24,10 +33,20 @@ export const getServerSideProps = async (context) => {
     },
   });
 
+  if (!trip) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/',
+      },
+    };
+  }
+
   if (session) {
     const like = await prisma.tripLike.findMany({
       where: { userId: session.user.sub, tripId: trip.id },
     });
+
     console.log('liked?', like);
     if (like.length > 0) {
       likedByUser = true;
@@ -36,7 +55,7 @@ export const getServerSideProps = async (context) => {
   }
   console.log('public?', trip.public);
   console.log('authorised author?', isAuthor);
-  if (!trip || (!isAuthor && !trip.public)) {
+  if (!isAuthor && !trip.public) {
     return {
       redirect: {
         permanent: false,

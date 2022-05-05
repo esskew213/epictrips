@@ -9,6 +9,14 @@ import prisma from '../../../lib/prisma';
 import HeadComponent from '../../../components/Head';
 export const getServerSideProps = withPageAuthRequired({
   getServerSideProps: async (context) => {
+    if (!parseInt(context.params.id)) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/',
+        },
+      };
+    }
     const id = parseInt(context.params.id);
     const { req, res } = context;
     const { user } = getSession(req, res);
