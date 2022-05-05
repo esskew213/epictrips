@@ -25,6 +25,11 @@ export const getServerSideProps = async (context) => {
     where: { id: authorId },
     include: {
       likedTrips: {
+        where: {
+          trip: {
+            public: true
+          }
+        },
         include: {
           trip: {
             include: {
